@@ -1,10 +1,10 @@
+import { Hero } from '@/components';
 import { createFileRoute } from '@tanstack/react-router';
-import { Button } from '@tesser-streams/ui/components/button';
 
 const HomeComponent = () => {
   return (
-    <div className='p-3'>
-      <Button>Welcome Home!</Button>
+    <div>
+      <Hero />
     </div>
   );
 };
