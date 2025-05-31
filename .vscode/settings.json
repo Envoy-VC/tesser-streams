@@ -27,7 +27,6 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
-  "noir.nargoPath": "/Users/envoy1084/.aztec/bin/aztec-nargo",
   "files.associations": {
     "*.css": "tailwindcss"
   },
