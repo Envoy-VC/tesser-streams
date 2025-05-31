@@ -1,0 +1,40 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "extends": ["klarity/biome"],
+  "files": {
+    "ignore": ["**/_generated/**"]
+  },
+  "linter": {
+    "rules": {
+      "correctness": {
+        "noUndeclaredDependencies": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "include": ["apps/web/src/env.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            // Needed for env naming convention
+            "useNamingConvention": "off"
+          }
+        }
+      }
+    },
+    {
+      "include": ["apps/web/src/route-tree.gen.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noExplicitAny": "off"
+          },
+          "style": {
+            "useNamingConvention": "off"
+          }
+        }
+      }
+    }
+  ]
+}

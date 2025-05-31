@@ -1,0 +1,44 @@
+{
+  "name": "web-vite",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "format": "pnpm biome format",
+    "format:write": "pnpm biome format --write",
+    "serve": "vite preview",
+    "start": "vite",
+    "check": "pnpm format:check && tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@t3-oss/env-core": "^0.13.4",
+    "@tanstack/react-query": "^5.76.2",
+    "@tanstack/react-router": "^1.120.7",
+    "@tanstack/router-devtools": "^1.120.7",
+    "@tesser-streams/ui": "workspace:*",
+    "lucide-react": "^0.511.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "usehooks-ts": "^3.1.1",
+    "zod": "^3.25.23",
+    "zustand": "^5.0.5"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@tailwindcss/vite": "^4.1.7",
+    "@tanstack/router-plugin": "^1.120.7",
+    "@types/node": "^22.15.21",
+    "@types/react": "^19.1.5",
+    "@types/react-dom": "^19.1.5",
+    "@vitejs/plugin-react": "^4.5.0",
+    "autoprefixer": "^10.4.21",
+    "klarity": "^0.0.3",
+    "tailwindcss": "^4.1.7",
+    "tw-animate-css": "^1.3.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
+  }
+}
