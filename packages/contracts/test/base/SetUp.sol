@@ -13,6 +13,9 @@ import {OwnershipFacet} from "src/facets/OwnershipFacet.sol";
 import {VestingCoreFacet} from "src/facets/VestingCoreFacet.sol";
 import {VestingMathFacet} from "src/facets/VestingMathFacet.sol";
 
+// Token
+import {TesserToken} from "src/TesserToken.sol";
+
 // Initializers
 import {TesserInit} from "src/initializers/TesserInitializer.sol";
 
@@ -37,6 +40,9 @@ contract SetUp is Test {
 
     // Initializers
     TesserInit public tesserInit;
+
+    // Token
+    TesserToken public tesserToken;
 
     bool public __setUpDone;
 
@@ -66,6 +72,9 @@ contract SetUp is Test {
         ownershipFacet = OwnershipFacet(address(tesserProxy));
         vestingCoreFacet = VestingCoreFacet(address(tesserProxy));
         vestingMathFacet = VestingMathFacet(address(tesserProxy));
+
+        // Deploy Token
+        tesserToken = new TesserToken(owner.addr);
 
         vm.stopBroadcast();
 
