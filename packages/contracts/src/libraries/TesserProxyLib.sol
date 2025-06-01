@@ -68,7 +68,7 @@ library TesserProxyLib {
 
     /// @notice Returns the current contract owner
     /// @return contractOwner_ The address of the current contract owner
-    function contractOwner() internal view returns (address contractOwner_) {
+    function contractOwner() public view returns (address contractOwner_) {
         contractOwner_ = diamondStorage().contractOwner;
     }
 

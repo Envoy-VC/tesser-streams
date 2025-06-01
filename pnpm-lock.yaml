@@ -17,6 +17,9 @@ importers:
       '@commitlint/config-conventional':
         specifier: ^19.8.0
         version: 19.8.1
+      bignumber.js:
+        specifier: ^9.3.0
+        version: 9.3.0
       klarity:
         specifier: ^0.0.3
         version: 0.0.3
@@ -980,6 +983,9 @@ packages:
 
   babel-dead-code-elimination@1.0.10:
     resolution: {integrity: sha512-DV5bdJZTzZ0zn0DC24v3jD7Mnidh6xhKa4GfKCbq3sfW8kaWhDdZjP3i81geA8T33tdYqWKw4D3fVv0CwEgKVA==}
+
+  bignumber.js@9.3.0:
+    resolution: {integrity: sha512-EM7aMFTXbptt/wZdMlBv2t8IViwQL+h6SLHosp8Yf0dqJMTnY6iL32opnAB6kAdL0SZPuvcAzFr31o0c/R3/RA==}
 
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
@@ -2561,6 +2567,8 @@ snapshots:
       '@babel/types': 7.27.3
     transitivePeerDependencies:
       - supports-color
+
+  bignumber.js@9.3.0: {}
 
   binary-extensions@2.3.0: {}
 

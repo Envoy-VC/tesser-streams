@@ -1,26 +1,29 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.19;
 
-import {TesserProxyLib} from "../libraries/TesserProxyLib.sol";
-import {IERC173} from "../interfaces/IERC173.sol";
+import {OwnershipStorageLib} from "../libraries/OwnershipStorage.sol";
 
-/// @title OwnershipFacet
-/// @notice Facet implementing the ERC-173 standard for contract ownership
-/// @dev This facet provides functionality for managing contract ownership in the diamond proxy pattern
-contract OwnershipFacet is IERC173 {
-    /// @notice Transfers ownership of the contract to a new owner
-    /// @dev This function:
-    /// 1. Enforces that the caller is the current contract owner
-    /// 2. Updates the contract owner to the new address
-    /// @param _newOwner The address of the new contract owner
-    function transferOwnership(address _newOwner) external override {
-        TesserProxyLib.enforceIsContractOwner();
-        TesserProxyLib.setContractOwner(_newOwner);
+contract OwnershipFacet {
+    event OwnershipTransferStarted(address indexed previousOwner, address indexed newOwner);
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    function owner() public view returns (address) {
+        return OwnershipStorageLib.ownershipStorage().owner;
     }
 
-    /// @notice Returns the current owner of the contract
-    /// @return owner_ The address of the current contract owner
-    function owner() external view override returns (address owner_) {
-        owner_ = TesserProxyLib.contractOwner();
+    function transferOwnership(address newOwner) external {
+        OwnershipStorageLib.OwnershipStorage storage os = OwnershipStorageLib.ownershipStorage();
+        require(msg.sender == os.owner, "Only owner");
+        require(newOwner != address(0), "Zero address");
+        os.pendingOwner = newOwner;
+        emit OwnershipTransferStarted(os.owner, newOwner);
+    }
+
+    function acceptOwnership() external {
+        OwnershipStorageLib.OwnershipStorage storage os = OwnershipStorageLib.ownershipStorage();
+        require(msg.sender == os.pendingOwner, "Not pending owner");
+        emit OwnershipTransferred(os.owner, os.pendingOwner);
+        os.owner = os.pendingOwner;
+        os.pendingOwner = address(0);
     }
 }
