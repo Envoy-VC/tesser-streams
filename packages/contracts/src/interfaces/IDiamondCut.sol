@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.28;
 
 /// @title IDiamondCut
 /// @notice Interface for the Diamond Cut proxy pattern

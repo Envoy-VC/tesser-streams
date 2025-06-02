@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.28;
 
 library OwnershipStorageLib {
     bytes32 constant OWNERSHIP_STORAGE_POSITION = keccak256("tesser.streams.ownership.storage");

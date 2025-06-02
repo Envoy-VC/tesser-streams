@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.28;
 
 import {Test, console2 as console, Vm} from "forge-std/Test.sol";
-import {UD60x18, ud, intoUint256} from "prb-math/UD60x18.sol";
+import {UD60x18, ud, intoUint256} from "@prb/math/src/UD60x18.sol";
 
 contract VestingMathTest is Test {
     function test_computeRatio() public pure {

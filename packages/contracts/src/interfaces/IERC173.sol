@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.28;
 
 /// @title IERC173
 /// @notice Interface for the ERC-173 standard for contract ownership

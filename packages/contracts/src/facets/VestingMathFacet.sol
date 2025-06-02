@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.28;
 
 import {VestingStorageLib} from "../libraries/VestingStorage.sol";
-import {UD60x18, ud, intoUint256} from "prb-math/UD60x18.sol";
+import {UD60x18, ud, intoUint256} from "@prb/math/src/UD60x18.sol";
 
 contract VestingMathFacet {
     function computeVestedAmount(bytes32 vestingId) public view returns (uint256) {

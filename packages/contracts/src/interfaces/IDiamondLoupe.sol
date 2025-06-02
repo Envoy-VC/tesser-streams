@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.28;
 
 /// @title Diamond Loupe Interface
 /// @notice This interface provides functions to inspect the facets and function selectors of a diamond proxy
