@@ -12,7 +12,7 @@ function RouteComponent() {
       <div className='px-4'>
         <Sidebar />
       </div>
-      <div>
+      <div className='h-full w-full'>
         <Outlet />
       </div>
     </SidebarProvider>

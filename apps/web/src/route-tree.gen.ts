@@ -14,6 +14,7 @@ import { Route as rootRoute } from './app/__root';
 import { Route as DashboardRouteImport } from './app/dashboard/route';
 import { Route as IndexImport } from './app/index';
 import { Route as DashboardIndexImport } from './app/dashboard/index';
+import { Route as DashboardMintImport } from './app/dashboard/mint';
 
 // Create/Update Routes
 
@@ -35,6 +36,12 @@ const DashboardIndexRoute = DashboardIndexImport.update({
   getParentRoute: () => DashboardRouteRoute,
 } as any);
 
+const DashboardMintRoute = DashboardMintImport.update({
+  id: '/mint',
+  path: '/mint',
+  getParentRoute: () => DashboardRouteRoute,
+} as any);
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -53,6 +60,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport;
       parentRoute: typeof rootRoute;
     };
+    '/dashboard/mint': {
+      id: '/dashboard/mint';
+      path: '/mint';
+      fullPath: '/dashboard/mint';
+      preLoaderRoute: typeof DashboardMintImport;
+      parentRoute: typeof DashboardRouteImport;
+    };
     '/dashboard/': {
       id: '/dashboard/';
       path: '/';
@@ -66,10 +80,12 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface DashboardRouteRouteChildren {
+  DashboardMintRoute: typeof DashboardMintRoute;
   DashboardIndexRoute: typeof DashboardIndexRoute;
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardMintRoute: DashboardMintRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 };
 
@@ -80,11 +96,13 @@ const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute;
   '/dashboard': typeof DashboardRouteRouteWithChildren;
+  '/dashboard/mint': typeof DashboardMintRoute;
   '/dashboard/': typeof DashboardIndexRoute;
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute;
+  '/dashboard/mint': typeof DashboardMintRoute;
   '/dashboard': typeof DashboardIndexRoute;
 }
 
@@ -92,15 +110,16 @@ export interface FileRoutesById {
   __root__: typeof rootRoute;
   '/': typeof IndexRoute;
   '/dashboard': typeof DashboardRouteRouteWithChildren;
+  '/dashboard/mint': typeof DashboardMintRoute;
   '/dashboard/': typeof DashboardIndexRoute;
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: '/' | '/dashboard' | '/dashboard/';
+  fullPaths: '/' | '/dashboard' | '/dashboard/mint' | '/dashboard/';
   fileRoutesByTo: FileRoutesByTo;
-  to: '/' | '/dashboard';
-  id: '__root__' | '/' | '/dashboard' | '/dashboard/';
+  to: '/' | '/dashboard/mint' | '/dashboard';
+  id: '__root__' | '/' | '/dashboard' | '/dashboard/mint' | '/dashboard/';
   fileRoutesById: FileRoutesById;
 }
 
@@ -134,8 +153,13 @@ export const routeTree = rootRoute
     "/dashboard": {
       "filePath": "dashboard/route.tsx",
       "children": [
+        "/dashboard/mint",
         "/dashboard/"
       ]
+    },
+    "/dashboard/mint": {
+      "filePath": "dashboard/mint.tsx",
+      "parent": "/dashboard"
     },
     "/dashboard/": {
       "filePath": "dashboard/index.tsx",
