@@ -78,22 +78,22 @@ library TesserProxyLib {
         require(msg.sender == diamondStorage().contractOwner, "TesserProxy: Must be contract owner");
     }
 
-    /// @notice Ensures that a contract has code at the specified address
-    /// @param _contract The address to check
-    /// @param _errorMessage The error message to revert with if the contract has no code
-    function enforceHasContractCode(address _contract, string memory _errorMessage) internal view {
-        uint256 contractSize;
-        assembly {
-            contractSize := extcodesize(_contract)
-        }
-        require(contractSize > 0, _errorMessage);
-    }
+    // /// @notice Ensures that a contract has code at the specified address
+    // /// @param _contract The address to check
+    // /// @param _errorMessage The error message to revert with if the contract has no code
+    // function enforceHasContractCode(address _contract, string memory _errorMessage) internal view {
+    //     uint256 contractSize;
+    //     assembly {
+    //         contractSize := extcodesize(_contract)
+    //     }
+    //     require(contractSize > 0, _errorMessage);
+    // }
 
     /// @notice Adds a new facet to the diamond
     /// @param ds The diamond storage struct
     /// @param _facetAddress The address of the facet to add
     function addFacet(DiamondStorage storage ds, address _facetAddress) internal {
-        enforceHasContractCode(_facetAddress, "TesserProxyLib: New facet has no code");
+        // enforceHasContractCode(_facetAddress, "TesserProxyLib: New facet has no code");
         ds.facetFunctionSelectors[_facetAddress].facetAddressPosition = ds.facetAddresses.length;
         ds.facetAddresses.push(_facetAddress);
     }
@@ -154,7 +154,7 @@ library TesserProxyLib {
         if (_init == address(0)) {
             return;
         }
-        enforceHasContractCode(_init, "TesserProxyLib: _init address has no code");
+        // enforceHasContractCode(_init, "TesserProxyLib: _init address has no code");
         (bool success, bytes memory error) = _init.delegatecall(_calldata);
         if (!success) {
             if (error.length > 0) {
@@ -219,6 +219,7 @@ library TesserProxyLib {
         if (selectorPosition == 0) {
             addFacet(ds, _facetAddress);
         }
+
         for (uint256 selectorIndex; selectorIndex < _functionSelectors.length; selectorIndex++) {
             bytes4 selector = _functionSelectors[selectorIndex];
             address oldFacetAddress = ds.selectorToFacetAndPosition[selector].facetAddress;
@@ -245,7 +246,6 @@ library TesserProxyLib {
                 revert("TesserProxyLib: Incorrect FacetCutAction");
             }
         }
-        emit DiamondCut(_diamondCut, _init, _calldata);
         initializeDiamondCut(_init, _calldata);
     }
 }

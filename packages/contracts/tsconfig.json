@@ -11,6 +11,5 @@
     "skipLibCheck": true,
     "resolveJsonModule": true
   },
-  "include": ["./scripts", "./hardhat-tests", "./typechain-types"],
-  "files": ["./hardhat.config.ts"]
+  "include": ["**/*.ts"]
 }

@@ -1,10 +1,10 @@
 import { config as dotenvConfig } from 'dotenv';
 import type { HardhatUserConfig } from 'hardhat/config';
 
+import '@nomicfoundation/hardhat-ethers';
 import '@nomicfoundation/hardhat-toolbox';
 import '@parity/hardhat-polkadot';
 import '@typechain/hardhat';
-import '@nomicfoundation/hardhat-ethers';
 import '@nomicfoundation/hardhat-chai-matchers';
 
 dotenvConfig();
@@ -38,9 +38,9 @@ const config: HardhatUserConfig = {
       polkavm: true,
       url: 'http://127.0.0.1:8545',
     },
-    westendHub: {
+    polkadotHubTestnet: {
       polkavm: true,
-      url: 'https://westend-asset-hub-eth-rpc.polkadot.io',
+      url: 'https://testnet-passet-hub-eth-rpc.polkadot.io',
       accounts: [process.env.PRIVATE_KEY as string],
     },
   },
