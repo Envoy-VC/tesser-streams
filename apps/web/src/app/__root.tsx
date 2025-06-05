@@ -2,7 +2,7 @@ import { ProviderTree } from '@/providers';
 import { Outlet, createRootRoute } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 
-import '@zkpersona/ui/globals.css';
+import '@tesser-streams/ui/globals.css';
 
 const RootComponent = () => {
   return (

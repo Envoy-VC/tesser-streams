@@ -38,6 +38,6 @@
     "class:list"
   ],
   "tailwindCSS.experimental.configFile": {
-    "packages/ui/src/styles/globals.css": ["apps/web/**"]
+    "packages/ui/src/styles/globals.css": ["apps/web/**", "packages/ui/src/**"]
   }
 }

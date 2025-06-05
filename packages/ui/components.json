@@ -11,10 +11,10 @@
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@zkpersona/ui/components",
-    "utils": "@zkpersona/ui/lib/utils",
-    "hooks": "@zkpersona/ui/hooks",
-    "lib": "@zkpersona/ui/lib",
-    "ui": "@zkpersona/ui/components"
+    "components": "@tesser-streams/ui/components",
+    "utils": "@tesser-streams/ui/lib/utils",
+    "hooks": "@tesser-streams/ui/hooks",
+    "lib": "@tesser-streams/ui/lib",
+    "ui": "@tesser-streams/ui/components"
   }
 }
