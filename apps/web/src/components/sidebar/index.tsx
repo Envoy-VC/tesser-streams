@@ -62,12 +62,7 @@ export const Sidebar = () => {
       className=' mx-6 my-auto h-[calc(100%-48px)] overflow-clip rounded-2xl px-0 py-0'
     >
       <SidebarHeader className='border-b'>
-        <SidebarMenu
-        // className={cn(
-        //   'flex flex-row items-center gap-2 p-5',
-        //   open ? 'justify-start' : 'justify-center'
-        // )}
-        >
+        <SidebarMenu>
           <SidebarMenuItem
             className={cn(
               'flex items-center gap-2',
@@ -140,13 +135,13 @@ export const Sidebar = () => {
               <SidebarMenuItem
                 key={item.title}
                 className={cn(
-                  'my-[2px] flex h-12 flex-row items-center gap-2 rounded-xl transition-colors duration-300 ease-in-out hover:border-[#644AEE]/15 hover:bg-[#644AEE]/15 hover:text-[#644AEE]',
+                  'my-[2px] flex h-10 flex-row items-center gap-2 rounded-xl transition-colors duration-300 ease-in-out hover:border-[#644AEE]/15 hover:bg-[#644AEE]/15 hover:text-[#644AEE]',
                   open ? 'w-full' : 'w-12 justify-center text-neutral-400'
                 )}
               >
                 <Link
                   to={item.href}
-                  className='flex h-12 w-full items-center justify-center'
+                  className='flex h-10 w-full items-center justify-center'
                   activeProps={{
                     className:
                       '!text-[#644AEE] !border-[#644AEE]/15 !bg-[#644AEE]/15 rounded-xl',
@@ -157,12 +152,12 @@ export const Sidebar = () => {
                 >
                   <SidebarMenuButton
                     className={cn(
-                      '!h-12 flex w-full flex-row items-center gap-4 hover:text-[#644AEE]'
+                      '!h-10 flex w-full flex-row items-center gap-4 hover:text-[#644AEE]'
                     )}
                     variant='default'
                   >
                     <item.icon />
-                    <div className='font-medium text-[17px]'>{item.title}</div>
+                    <div className='font-medium text-[1rem]'>{item.title}</div>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
@@ -175,13 +170,13 @@ export const Sidebar = () => {
               <SidebarMenuItem
                 key={item.title}
                 className={cn(
-                  'my-[2px] flex h-12 flex-row items-center gap-2 rounded-xl transition-colors duration-300 ease-in-out hover:border-[#644AEE]/15 hover:bg-[#644AEE]/15 hover:text-[#644AEE]',
+                  'my-[2px] flex h-10 flex-row items-center gap-2 rounded-xl transition-colors duration-300 ease-in-out hover:border-[#644AEE]/15 hover:bg-[#644AEE]/15 hover:text-[#644AEE]',
                   open ? 'w-full' : 'w-12 justify-center text-neutral-400'
                 )}
               >
                 <Link
                   to={item.href}
-                  className='flex h-12 w-full items-center justify-center'
+                  className='flex h-10 w-full items-center justify-center'
                   activeProps={{
                     className:
                       '!text-[#644AEE] !border-[#644AEE]/15 !bg-[#644AEE]/15 rounded-xl',
@@ -192,12 +187,12 @@ export const Sidebar = () => {
                 >
                   <SidebarMenuButton
                     className={cn(
-                      '!h-12 flex w-full flex-row items-center gap-4 hover:text-[#644AEE]'
+                      '!h-10 flex w-full flex-row items-center gap-4 hover:text-[#644AEE]'
                     )}
                     variant='default'
                   >
                     <item.icon />
-                    <div className='font-medium text-[17px]'>{item.title}</div>
+                    <div className='font-medium text-[1rem]'>{item.title}</div>
                   </SidebarMenuButton>
                 </Link>
               </SidebarMenuItem>
