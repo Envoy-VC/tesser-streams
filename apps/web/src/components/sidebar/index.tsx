@@ -17,18 +17,12 @@ import {
   CirclePlusIcon,
   PanelLeftIcon,
   SettingsIcon,
-  TvMinimalIcon,
 } from 'lucide-react';
 import { TesserStreamsLogo } from '../logo';
 
 const navItems = [
   {
-    title: 'Dashboard',
-    href: '/dashboard',
-    icon: TvMinimalIcon,
-  },
-  {
-    title: 'Create Vesting',
+    title: 'Create Schedule',
     href: '/dashboard/create',
     icon: CalendarPlus2Icon,
   },

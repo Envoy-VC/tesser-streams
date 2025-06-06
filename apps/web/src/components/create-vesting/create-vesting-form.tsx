@@ -21,7 +21,15 @@ import {
   SelectValue,
 } from '@tesser-streams/ui/components/select';
 
+import { getDuration } from '@/lib/helpers';
+import { Contracts, wagmiAdapter } from '@/lib/wagmi';
 import { Input } from '@tesser-streams/ui/components/input';
+import { readContract, waitForTransactionReceipt } from '@wagmi/core';
+import { CirclePlusIcon, Loader2Icon } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { parseEther } from 'viem';
+import { useAccount, useWriteContract } from 'wagmi';
 import { VestingChart } from './vesting-chart';
 
 const alphaValues = [
@@ -47,7 +55,7 @@ const formSchema = z.object({
     return /^0x[a-fA-F0-9]{40}$/.test(v);
   }, 'Invalid Ethereum address'),
   cliffParams: z.object({
-    duration: z.number({ message: 'Cliff duration is required' }).min(0),
+    duration: z.number({ message: 'Cliff duration is required' }),
     unit: z.union([
       z.literal('days'),
       z.literal('weeks'),
@@ -56,7 +64,7 @@ const formSchema = z.object({
     ]),
   }),
   vestingParams: z.object({
-    duration: z.number({ message: 'Vesting duration is required' }).min(0),
+    duration: z.number({ message: 'Vesting duration is required' }),
     unit: z.union([
       z.literal('days'),
       z.literal('weeks'),
@@ -64,14 +72,20 @@ const formSchema = z.object({
       z.literal('years'),
     ]),
   }),
-  totalAmount: z.number({ message: 'Total amount is required' }).min(0),
+  totalAmount: z.number({ message: 'Total amount is required' }),
   alpha: z.number({ message: 'Alpha is required' }).min(0.1).max(0.9),
 });
 
 export const CreateVestingForm = () => {
+  const { writeContractAsync } = useWriteContract();
+  const { address } = useAccount();
+
+  const [isCreating, setIsCreating] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      beneficiary: address ?? undefined,
       cliffParams: {
         unit: 'months',
       },
@@ -82,8 +96,78 @@ export const CreateVestingForm = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      setIsCreating(true);
+      if (!address) {
+        throw new Error('Connect your wallet');
+      }
+      const value = parseEther(values.totalAmount.toString());
+      if (value === 0n) {
+        throw new Error('Amount must be greater than 0');
+      }
+      const cliffDuration = getDuration(
+        values.cliffParams.duration,
+        values.cliffParams.unit
+      );
+      const vestingDuration = getDuration(
+        values.vestingParams.duration,
+        values.vestingParams.unit
+      );
+
+      if (vestingDuration <= 0) {
+        throw new Error('Vesting duration must be greater than 0');
+      }
+
+      const needsApproval =
+        (await readContract(wagmiAdapter.wagmiConfig, {
+          ...Contracts.token,
+          functionName: 'allowance',
+          args: [address, Contracts.tesserProxy.address],
+        })) < value;
+
+      if (needsApproval) {
+        const approvalHash = await writeContractAsync({
+          ...Contracts.token,
+          functionName: 'approve',
+          args: [Contracts.tesserProxy.address, value],
+        });
+        await waitForTransactionReceipt(wagmiAdapter.wagmiConfig, {
+          hash: approvalHash,
+        });
+      }
+
+      const hash = await writeContractAsync({
+        ...Contracts.vestingCore,
+        functionName: 'createVestingSchedule',
+        args: [
+          values.beneficiary as `0x${string}`,
+          Contracts.token.address,
+          value,
+          cliffDuration,
+          vestingDuration,
+          parseEther(values.alpha.toString()),
+        ],
+      });
+      await waitForTransactionReceipt(wagmiAdapter.wagmiConfig, { hash });
+      toast.success('Successfully created vesting schedule');
+      form.reset({
+        beneficiary: address ?? undefined,
+        cliffParams: {
+          unit: 'months',
+        },
+        vestingParams: {
+          unit: 'years',
+        },
+        alpha: 0.5,
+      });
+      setIsCreating(false);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      toast.error(message);
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   const alpha = form.watch('alpha');
@@ -126,10 +210,12 @@ export const CreateVestingForm = () => {
                     <FormItem>
                       <FormControl>
                         <Input
-                          type='number'
                           placeholder='1'
                           className='w-[10rem] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
                           {...field}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -179,6 +265,9 @@ export const CreateVestingForm = () => {
                           placeholder='1'
                           className='w-[10rem] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
                           {...field}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -227,6 +316,7 @@ export const CreateVestingForm = () => {
                     placeholder='10,000,000'
                     className='[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
                     {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
                   />
                 </FormControl>
                 <FormMessage />
@@ -282,8 +372,14 @@ export const CreateVestingForm = () => {
             className='!font-medium !text-base mt-5 flex w-full flex-row items-center justify-center gap-2 rounded-xl'
             variant='default'
             type='submit'
+            disabled={isCreating}
           >
-            Create Schedule
+            {isCreating ? (
+              <Loader2Icon className='animate-spin' />
+            ) : (
+              <CirclePlusIcon />
+            )}
+            {isCreating ? 'Creating Schedule...' : 'Create Schedule'}
           </Button>
         </form>
       </Form>

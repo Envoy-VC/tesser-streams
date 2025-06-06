@@ -97,4 +97,4 @@ export const DIAMOND_CUT_ABI = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;

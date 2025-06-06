@@ -75,4 +75,4 @@ export const VESTING_MATH_ABI = [
     stateMutability: 'view',
     type: 'function',
   },
-];
+] as const;

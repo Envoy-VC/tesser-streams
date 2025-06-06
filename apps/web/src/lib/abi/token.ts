@@ -620,4 +620,4 @@ export const TOKEN_ABI = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;

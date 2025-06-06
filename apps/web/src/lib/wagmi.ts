@@ -12,7 +12,6 @@ const assetHub = defineChain({
   id: 420420421,
   name: 'polkadot-hub-testnet',
   network: 'polkadot-hub-testnet',
-  testnet: true,
   nativeCurrency: {
     decimals: 18,
     name: 'PAS',
@@ -78,7 +77,11 @@ createAppKit({
 
 const TesserProxyContractAddress = '0x9BAD627831Cf36c6d9c0e62A37dfd886b9087818';
 
-const Contracts = {
+export const Contracts = {
+  tesserProxy: {
+    abi: [],
+    address: TesserProxyContractAddress,
+  },
   diamondCut: {
     abi: DIAMOND_CUT_ABI,
     address: TesserProxyContractAddress,

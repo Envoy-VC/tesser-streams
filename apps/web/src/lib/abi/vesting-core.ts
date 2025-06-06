@@ -195,4 +195,4 @@ export const VESTING_CORE_ABI = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-];
+] as const;

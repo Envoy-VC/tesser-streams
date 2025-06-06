@@ -1,9 +1,49 @@
 import { Button } from '@tesser-streams/ui/components/button';
 import { Input } from '@tesser-streams/ui/components/input';
-import { CirclePlusIcon } from 'lucide-react';
+import { waitForTransactionReceipt } from '@wagmi/core';
+import { CirclePlusIcon, Loader2Icon } from 'lucide-react';
+import { useAccount, useWriteContract } from 'wagmi';
 import { TesserStreamsLogo } from './logo';
 
+import { Contracts, wagmiAdapter } from '@/lib/wagmi';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { parseEther } from 'viem';
+
 export const MintTesser = () => {
+  const { writeContractAsync } = useWriteContract();
+  const { address } = useAccount();
+
+  const [amount, setAmount] = useState('');
+  const [isMinting, setIsMinting] = useState(false);
+
+  const onMint = async () => {
+    try {
+      setIsMinting(true);
+      if (!address) {
+        throw new Error('Connect your wallet');
+      }
+      const value = parseEther(amount);
+      if (value === 0n) {
+        throw new Error('Amount must be greater than 0');
+      }
+      const hash = await writeContractAsync({
+        ...Contracts.token,
+        functionName: 'mint',
+        args: [address, value],
+      });
+      await waitForTransactionReceipt(wagmiAdapter.wagmiConfig, { hash });
+      toast.success('Successfully minted');
+      setAmount('');
+      setIsMinting(false);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.log(error);
+      toast.error(message);
+    } finally {
+      setIsMinting(false);
+    }
+  };
   return (
     <div className='card-gradient flex w-full max-w-xl flex-col gap-2 rounded-3xl border p-6'>
       <div className='flex flex-col gap-2'>
@@ -18,6 +58,8 @@ export const MintTesser = () => {
       <div className='my-4 flex flex-row items-center justify-between rounded-2xl border p-3'>
         <Input
           placeholder='0.00'
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
           type='number'
           step={1}
           min={0}
@@ -35,9 +77,15 @@ export const MintTesser = () => {
       <Button
         className='!font-medium !text-base flex flex-row items-center justify-center gap-2 rounded-xl'
         variant='default'
+        onClick={onMint}
+        disabled={isMinting}
       >
-        <CirclePlusIcon />
-        Mint Tokens
+        {isMinting ? (
+          <Loader2Icon className='animate-spin' />
+        ) : (
+          <CirclePlusIcon />
+        )}
+        {isMinting ? 'Minting...' : 'Mint Tokens'}
       </Button>
     </div>
   );
