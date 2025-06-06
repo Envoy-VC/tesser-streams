@@ -1,13 +1,14 @@
-import * as React from 'react';
+// biome-ignore lint/style/noNamespaceImport: <explanation>
+import * as react from 'react';
 
 const MOBILE_BREAKPOINT = 768;
 
 export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
+  const [isMobile, setIsMobile] = react.useState<boolean | undefined>(
     undefined
   );
 
-  React.useEffect(() => {
+  react.useEffect(() => {
     const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
     const onChange = () => {
       setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);

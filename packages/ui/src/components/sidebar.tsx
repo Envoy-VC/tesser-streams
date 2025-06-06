@@ -4,7 +4,6 @@ import { PanelLeftIcon } from 'lucide-react';
 // biome-ignore lint/style/noNamespaceImport: <explanation>
 import * as react from 'react';
 
-import { useIsMobile } from '@tesser-streams/ui/hooks/use-mobile';
 import { Button } from '@tesser-streams/ui/components/button';
 import { Input } from '@tesser-streams/ui/components/input';
 import { Separator } from '@tesser-streams/ui/components/separator';
@@ -22,6 +21,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@tesser-streams/ui/components/tooltip';
+import { useIsMobile } from '@tesser-streams/ui/hooks/use-mobile';
 import { cn } from '@tesser-streams/ui/lib/utils';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
