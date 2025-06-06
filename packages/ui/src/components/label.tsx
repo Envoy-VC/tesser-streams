@@ -1,19 +1,20 @@
 'use client';
 
-import * as React from 'react';
-import * as LabelPrimitive from '@radix-ui/react-label';
+// biome-ignore lint/style/noNamespaceImport: <explanation>
+import * as labelPrimitive from '@radix-ui/react-label';
+import type * as react from 'react';
 
 import { cn } from '@tesser-streams/ui/lib/utils';
 
 function Label({
   className,
   ...props
-}: React.ComponentProps<typeof LabelPrimitive.Root>) {
+}: react.ComponentProps<typeof labelPrimitive.Root>) {
   return (
-    <LabelPrimitive.Root
+    <labelPrimitive.Root
       data-slot='label'
       className={cn(
-        'flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50',
+        'flex select-none items-center gap-2 font-medium text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-50 group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50',
         className
       )}
       {...props}
