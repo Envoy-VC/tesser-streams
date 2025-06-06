@@ -372,6 +372,7 @@ export const CreateVestingForm = () => {
                       placeholder='0.5'
                       className='[&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
                       {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
                     />
                   </FormControl>
                   <FormMessage />
