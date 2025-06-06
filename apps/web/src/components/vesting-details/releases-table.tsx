@@ -1,3 +1,4 @@
+import { type ReleaseTransaction, db } from '@/db';
 import {
   type ColumnDef,
   type SortingState,
@@ -16,45 +17,39 @@ import {
   TableHeader,
   TableRow,
 } from '@tesser-streams/ui/components/table';
+import dayjs from 'dayjs';
+import { useLiveQuery } from 'dexie-react-hooks';
 import { ArrowUpDown } from 'lucide-react';
 import { useState } from 'react';
+
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+import { TesserStreamsLogo } from '../logo';
+
+dayjs.extend(advancedFormat);
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-type ReleaseTransaction = {
-  hash: string;
-  amount: number;
-  timestamp: number;
-};
-
-export const data: ReleaseTransaction[] = [
-  {
-    hash: '728ed52f',
-    amount: 100,
-    timestamp: 123456789,
-  },
-  {
-    hash: '489e1d42',
-    amount: 125,
-    timestamp: 123456789,
-  },
-];
-
 export const columns: ColumnDef<ReleaseTransaction>[] = [
   {
-    accessorKey: 'hash',
+    accessorKey: 'transactionHash',
     header: ({ column }) => {
       return (
         <Button
           variant='ghost'
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          TransactionHash
+          Transaction Hash
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const transactionHash = row.getValue('transactionHash') as string;
+      return (
+        <div className='text-lg'>{(transactionHash ?? '').slice(0, 10)}...</div>
       );
     },
   },
@@ -63,8 +58,19 @@ export const columns: ColumnDef<ReleaseTransaction>[] = [
     header: 'Amount',
     cell: ({ row }) => {
       const amount = Number.parseFloat(row.getValue('amount'));
-      const formatted = amount.toLocaleString();
-      return <div>{formatted}</div>;
+      const formatted = (amount / 1e18).toFixed(3).toLocaleString();
+      return (
+        <div className='flex flex-row items-center gap-2'>
+          <div className='text-lg'>{formatted} </div>
+          <div className='flex size-6 items-center justify-center rounded-full bg-primary'>
+            <TesserStreamsLogo
+              fill='#fff'
+              stroke='#fff'
+              className='size-4'
+            />
+          </div>
+        </div>
+      );
     },
   },
   {
@@ -83,7 +89,9 @@ export const columns: ColumnDef<ReleaseTransaction>[] = [
     cell: ({ row }) => {
       const timestamp = Number.parseInt(row.getValue('timestamp'));
       const date = new Date(timestamp * 1000);
-      return <div>{date.toLocaleDateString()}</div>;
+      return (
+        <div className='text-lg'>{dayjs(date).format('ddd Do MMM YYYY')}</div>
+      );
     },
   },
 ];
@@ -91,8 +99,12 @@ export const columns: ColumnDef<ReleaseTransaction>[] = [
 export const ReleasesTable = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
 
+  const data = useLiveQuery(async () => {
+    return await db.releases.toArray();
+  });
+
   const table = useReactTable({
-    data,
+    data: data ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
@@ -132,7 +144,7 @@ export const ReleasesTable = () => {
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && 'selected'}
-                className=' !border-none h-14 '
+                className=' !border-none h-14'
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell

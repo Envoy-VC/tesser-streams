@@ -2,10 +2,10 @@ import NumberFlow from '@number-flow/react';
 
 import { computeReleasable, getScheduleDetails } from '@/lib/helpers';
 import { Contracts } from '@/lib/wagmi';
-import { Button } from '@tesser-streams/ui/components/button';
 import { useEffect, useMemo, useState } from 'react';
 import { useReadContract } from 'wagmi';
 import { TesserStreamsLogo } from '../logo';
+import { ReleaseScheduleButton } from './release';
 import { ReleasesTable } from './releases-table';
 import { VestingChart } from './vesting-chart';
 
@@ -61,7 +61,7 @@ export const VestingDetails = ({ vestingId }: VestingDetailsProps) => {
                 />
               </div>
               <div className='flex justify-end'>
-                <Button className='!rounded-lg h-8'>Claim All</Button>
+                <ReleaseScheduleButton vestingId={vestingId} />
               </div>
             </div>
             <div className='flex h-48 items-center justify-center rounded-b-xl border-r border-b border-l bg-black bg-gradient-to-r from-[rgba(19,17,36,.5)] via-black to-[rgba(19,17,36,.5)] text-center text-[rgb(100,74,238)] text-xl'>

@@ -12,15 +12,16 @@ export interface VestingSchedule {
   startAt: number;
 }
 
-export interface Release {
+export interface ReleaseTransaction {
   vestingId: string;
-  amount: number;
+  amount: bigint;
+  transactionHash: string;
   timestamp: number;
 }
 
 const db = new Dexie('TesserDB') as Dexie & {
   schedules: EntityTable<VestingSchedule, 'vestingId'>;
-  releases: EntityTable<Release, 'vestingId'>;
+  releases: EntityTable<ReleaseTransaction, 'vestingId'>;
 };
 
 db.version(1).stores({
