@@ -28,6 +28,21 @@ The system is implemented as a modular Diamond Proxy smart contract architecture
 - `DiamondCutFacet`: Upgrade functionality (diamondCut)
 - `DiamondLoupeFacet`: Contract introspection (facets, facetFunctionSelectors)
 
+#### Deployed Contracts
+
+Contracts are deployed on the Passet Hub Chain, with the main contract being `TesserDiamond`.
+
+```md
+DiamondCutFacet deployed to: 0xba608eCE05362A15BC8eF7038Bcb3B710Cda1Ef2
+TesserProxy deployed to: 0x9BAD627831Cf36c6d9c0e62A37dfd886b9087818
+DiamondLoupeFacet deployed to: 0xd6a59e838345a2344e74B93941C3992332C35a3d
+OwnershipFacet deployed to: 0xf322b02ab9Eb627c10eec1cE0422668B0BA2d823
+VestingCoreFacet deployed to: 0x7b7047f64b0649150a12C311E8CBa14a384357c8
+VestingMathFacet deployed to: 0x581158d99f8eE27806732CCaB6bc10d9B947dd60
+TesserToken deployed to: 0x8444eC14c268Fc49A8edF4543b92dc846fE8F049
+TesserInit deployed to: 0xC792882a5d7E8F89976AC556277508E6B492B38C
+```
+
 #### Fractional Math Engine
 
 Fractional math is implemented using the [PRBMath](https://github.com/paulrberg/prb-math) library. It uses `UD60x18` numbers to represent fractional exponents, allowing for precision up to 18 decimal places.
