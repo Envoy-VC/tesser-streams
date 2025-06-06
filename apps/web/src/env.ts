@@ -6,7 +6,9 @@ export const env = createEnv({
     PORT: z.coerce.number().min(0).max(65535).default(3000),
   },
   clientPrefix: 'VITE_',
-  client: {},
+  client: {
+    VITE_REOWN_PROJECT_ID: z.string(),
+  },
   runtimeEnv: import.meta.env,
   emptyStringAsUndefined: true,
 });
