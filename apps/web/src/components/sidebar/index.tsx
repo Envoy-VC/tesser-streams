@@ -15,7 +15,6 @@ import { cn } from '@tesser-streams/ui/lib/utils';
 import {
   CalendarPlus2Icon,
   CirclePlusIcon,
-  ContactRoundIcon,
   PanelLeftIcon,
   SettingsIcon,
   TvMinimalIcon,
@@ -32,11 +31,6 @@ const navItems = [
     title: 'Create Vesting',
     href: '/dashboard/create',
     icon: CalendarPlus2Icon,
-  },
-  {
-    title: 'My Vesting',
-    href: '/dashboard/me',
-    icon: ContactRoundIcon,
   },
   {
     title: 'Manage Schedules',

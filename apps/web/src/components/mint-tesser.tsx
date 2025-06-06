@@ -1,6 +1,7 @@
 import { Button } from '@tesser-streams/ui/components/button';
 import { Input } from '@tesser-streams/ui/components/input';
 import { CirclePlusIcon } from 'lucide-react';
+import { TesserStreamsLogo } from './logo';
 
 export const MintTesser = () => {
   return (
@@ -14,7 +15,7 @@ export const MintTesser = () => {
           Schedules.
         </p>
       </div>
-      <div className='my-4 flex flex-row items-center rounded-2xl border p-3'>
+      <div className='my-4 flex flex-row items-center justify-between rounded-2xl border p-3'>
         <Input
           placeholder='0.00'
           type='number'
@@ -23,6 +24,13 @@ export const MintTesser = () => {
           max={100000}
           className='!text-5xl [&::-moz-appearance]:textfield h-12 w-full appearance-none border-none px-0 placeholder:text-5xl placeholder:text-neutral-400 focus-visible:border-none focus-visible:outline-none focus-visible:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
         />
+        <div className='flex max-h-12 min-h-12 min-w-12 max-w-12 items-center justify-center rounded-full border border-neutral-600 bg-primary'>
+          <TesserStreamsLogo
+            fill='#fff'
+            stroke='#fff'
+            className='size-6'
+          />
+        </div>
       </div>
       <Button
         className='!font-medium !text-base flex flex-row items-center justify-center gap-2 rounded-xl'
