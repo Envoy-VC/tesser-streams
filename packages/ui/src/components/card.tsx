@@ -1,13 +1,13 @@
-import * as React from 'react';
+import type * as react from 'react';
 
 import { cn } from '@tesser-streams/ui/lib/utils';
 
-function Card({ className, ...props }: React.ComponentProps<'div'>) {
+function Card({ className, ...props }: react.ComponentProps<'div'>) {
   return (
     <div
       data-slot='card'
       className={cn(
-        'bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm',
+        'flex flex-col gap-6 rounded-xl border bg-card py-6 text-card-foreground shadow-sm',
         className
       )}
       {...props}
@@ -15,7 +15,7 @@ function Card({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
-function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
+function CardHeader({ className, ...props }: react.ComponentProps<'div'>) {
   return (
     <div
       data-slot='card-header'
@@ -28,17 +28,17 @@ function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
-function CardTitle({ className, ...props }: React.ComponentProps<'div'>) {
+function CardTitle({ className, ...props }: react.ComponentProps<'div'>) {
   return (
     <div
       data-slot='card-title'
-      className={cn('leading-none font-semibold', className)}
+      className={cn('font-semibold leading-none', className)}
       {...props}
     />
   );
 }
 
-function CardDescription({ className, ...props }: React.ComponentProps<'div'>) {
+function CardDescription({ className, ...props }: react.ComponentProps<'div'>) {
   return (
     <div
       data-slot='card-description'
@@ -48,7 +48,7 @@ function CardDescription({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
-function CardAction({ className, ...props }: React.ComponentProps<'div'>) {
+function CardAction({ className, ...props }: react.ComponentProps<'div'>) {
   return (
     <div
       data-slot='card-action'
@@ -61,7 +61,7 @@ function CardAction({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
-function CardContent({ className, ...props }: React.ComponentProps<'div'>) {
+function CardContent({ className, ...props }: react.ComponentProps<'div'>) {
   return (
     <div
       data-slot='card-content'
@@ -71,7 +71,7 @@ function CardContent({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
-function CardFooter({ className, ...props }: React.ComponentProps<'div'>) {
+function CardFooter({ className, ...props }: react.ComponentProps<'div'>) {
   return (
     <div
       data-slot='card-footer'

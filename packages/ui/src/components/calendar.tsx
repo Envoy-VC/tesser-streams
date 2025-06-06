@@ -1,18 +1,18 @@
 'use client';
 
-import * as React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import type * as react from 'react';
 import { DayPicker } from 'react-day-picker';
 
-import { cn } from '@tesser-streams/ui/lib/utils';
 import { buttonVariants } from '@tesser-streams/ui/components/button';
+import { cn } from '@tesser-streams/ui/lib/utils';
 
 function Calendar({
   className,
   classNames,
   showOutsideDays = true,
   ...props
-}: React.ComponentProps<typeof DayPicker>) {
+}: react.ComponentProps<typeof DayPicker>) {
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -21,16 +21,22 @@ function Calendar({
         months: 'flex flex-col sm:flex-row gap-2',
         month: 'flex flex-col gap-4',
         caption: 'flex justify-center pt-1 relative items-center w-full',
+        // biome-ignore lint/style/useNamingConvention: <explanation>
         caption_label: 'text-sm font-medium',
         nav: 'flex items-center gap-1',
+        // biome-ignore lint/style/useNamingConvention: <explanation>
         nav_button: cn(
           buttonVariants({ variant: 'outline' }),
           'size-7 bg-transparent p-0 opacity-50 hover:opacity-100'
         ),
+        // biome-ignore lint/style/useNamingConvention: <explanation>
         nav_button_previous: 'absolute left-1',
+        // biome-ignore lint/style/useNamingConvention: <explanation>
         nav_button_next: 'absolute right-1',
         table: 'w-full border-collapse space-x-1',
+        // biome-ignore lint/style/useNamingConvention: <explanation>
         head_row: 'flex',
+        // biome-ignore lint/style/useNamingConvention: <explanation>
         head_cell:
           'text-muted-foreground rounded-md w-8 font-normal text-[0.8rem]',
         row: 'flex w-full mt-2',
@@ -44,28 +50,38 @@ function Calendar({
           buttonVariants({ variant: 'ghost' }),
           'size-8 p-0 font-normal aria-selected:opacity-100'
         ),
+        // biome-ignore lint/style/useNamingConvention: <explanation>
         day_range_start:
           'day-range-start aria-selected:bg-primary aria-selected:text-primary-foreground',
+        // biome-ignore lint/style/useNamingConvention: <explanation>
         day_range_end:
           'day-range-end aria-selected:bg-primary aria-selected:text-primary-foreground',
+        // biome-ignore lint/style/useNamingConvention: <explanation>
         day_selected:
           'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground',
+        // biome-ignore lint/style/useNamingConvention: <explanation>
         day_today: 'bg-accent text-accent-foreground',
+        // biome-ignore lint/style/useNamingConvention: <explanation>
         day_outside:
           'day-outside text-muted-foreground aria-selected:text-muted-foreground',
+        // biome-ignore lint/style/useNamingConvention: <explanation>
         day_disabled: 'text-muted-foreground opacity-50',
+        // biome-ignore lint/style/useNamingConvention: <explanation>
         day_range_middle:
           'aria-selected:bg-accent aria-selected:text-accent-foreground',
+        // biome-ignore lint/style/useNamingConvention: <explanation>
         day_hidden: 'invisible',
         ...classNames,
       }}
       components={{
+        // biome-ignore lint/style/useNamingConvention: <explanation>
         IconLeft: ({ className, ...props }) => (
           <ChevronLeft
             className={cn('size-4', className)}
             {...props}
           />
         ),
+        // biome-ignore lint/style/useNamingConvention: <explanation>
         IconRight: ({ className, ...props }) => (
           <ChevronRight
             className={cn('size-4', className)}
