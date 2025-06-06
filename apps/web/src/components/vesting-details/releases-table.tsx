@@ -96,11 +96,11 @@ export const columns: ColumnDef<ReleaseTransaction>[] = [
   },
 ];
 
-export const ReleasesTable = () => {
+export const ReleasesTable = ({ vestingId }: { vestingId: string }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const data = useLiveQuery(async () => {
-    return await db.releases.toArray();
+    return await db.releases.filter((x) => x.vestingId === vestingId).toArray();
   });
 
   const table = useReactTable({

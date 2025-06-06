@@ -97,7 +97,7 @@ export const VestingDetails = ({ vestingId }: VestingDetailsProps) => {
           <VestingChart schedule={schedule} />
         </div>
       </div>
-      <ReleasesTable />
+      <ReleasesTable vestingId={vestingId} />
     </div>
   );
 };
