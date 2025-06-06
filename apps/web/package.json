@@ -26,6 +26,7 @@
     "@tanstack/router-devtools": "^1.120.7",
     "@tesser-streams/ui": "workspace:*",
     "@wagmi/core": "^2.17.2",
+    "dayjs": "^1.11.13",
     "dexie": "^4.0.11",
     "dexie-react-hooks": "^1.1.7",
     "lucide-react": "^0.511.0",

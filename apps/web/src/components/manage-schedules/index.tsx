@@ -1,23 +1,71 @@
 import { db } from '@/db';
-import { Link } from '@tanstack/react-router';
 
+import { timeBetween } from '@/lib/helpers';
+import { Link } from '@tanstack/react-router';
+import { Button } from '@tesser-streams/ui/components/button';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { formatEther } from 'viem';
+import { TesserStreamsLogo } from '../logo';
 
 export const ManageSchedules = () => {
   const schedules = useLiveQuery(async () => {
     return await db.schedules.toArray();
   });
   return (
-    <div>
-      {schedules?.map((schedule) => (
-        <Link
-          to='/dashboard/manage/$vestingId'
-          params={{ vestingId: schedule.vestingId }}
-          key={schedule.vestingId}
-        >
-          {schedule.vestingId}
-        </Link>
-      ))}
+    <div className='card-gradient mx-auto my-24 flex max-w-screen-lg flex-cpl flex-col gap-4 rounded-2xl border p-4'>
+      <div className='flex w-full flex-col rounded-xl border bg-[#101010] p-3'>
+        <div className='text-2xl'>Your Schedules</div>
+        <div className='text-neutral-400 text-sm'>
+          View and manage your schedules.
+        </div>
+      </div>
+      <div className='my-6 flex flex-row flex-wrap items-center'>
+        {schedules?.map((schedule) => (
+          <div
+            key={schedule.vestingId}
+            className='flex w-full max-w-[16rem] flex-col rounded-xl border bg-[#101010]'
+          >
+            <div className='flex flex-col gap-1 rounded-t-xl border-b p-3'>
+              <div className='text-neutral-400 text-xs'>AMOUNT</div>
+              <div className='flex flex-row items-center gap-2'>
+                <div className='text-2xl'>
+                  {formatEther(schedule.totalAmount)}
+                </div>
+                <div className='flex size-6 items-center justify-center rounded-full bg-primary'>
+                  <TesserStreamsLogo
+                    fill='#fff'
+                    stroke='#fff'
+                    className='size-4'
+                  />
+                </div>
+              </div>
+            </div>
+            <div className='flex flex-row items-center justify-between p-3'>
+              <div className='text-neutral-300 text-xs'>
+                {timeBetween(
+                  schedule.startAt,
+                  Math.floor(Date.now() / 1000),
+                  true
+                  // biome-ignore lint/nursery/useConsistentCurlyBraces: <explanation>
+                )}{' '}
+                ago
+              </div>
+              <Button
+                asChild={true}
+                variant='outline'
+                className='brightness-125 hover:brightness-100'
+              >
+                <Link
+                  to='/dashboard/manage/$vestingId'
+                  params={{ vestingId: schedule.vestingId }}
+                >
+                  Manage
+                </Link>
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

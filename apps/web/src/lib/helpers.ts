@@ -38,7 +38,11 @@ export const formatSeconds = (seconds: number) => {
   return '0 seconds';
 };
 
-function timeBetween(from: number, to: number, largestOnly = false): string {
+export function timeBetween(
+  from: number,
+  to: number,
+  largestOnly = false
+): string {
   // biome-ignore lint/style/noParameterAssign: false positive
   from = Math.floor(from);
   // biome-ignore lint/style/noParameterAssign: false positive

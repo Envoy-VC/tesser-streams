@@ -11,6 +11,8 @@ import {
 } from '@tesser-streams/ui/components/chart';
 import { useMemo } from 'react';
 
+import dayjs from 'dayjs';
+
 export const description = 'A simple area chart';
 
 const chartConfig = {
@@ -61,6 +63,10 @@ export const VestingChart = ({ schedule }: VestingChartProps) => {
               dataKey='timestamp'
               tickLine={false}
               axisLine={false}
+              // format to DD/MM/YY using dayjs
+              tickFormatter={(value) => {
+                return dayjs(value * 1000).format('DD/MM/YY');
+              }}
             />
             <ChartTooltip
               cursor={false}
