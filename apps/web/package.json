@@ -14,6 +14,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.0.1",
     "@splinetool/react-spline": "^4.0.0",
     "@t3-oss/env-core": "^0.13.4",
     "@tanstack/react-query": "^5.76.2",
@@ -23,6 +24,8 @@
     "lucide-react": "^0.511.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-hook-form": "^7.57.0",
+    "recharts": "^2.15.3",
     "usehooks-ts": "^3.1.1",
     "zod": "^3.25.23",
     "zustand": "^5.0.5"
