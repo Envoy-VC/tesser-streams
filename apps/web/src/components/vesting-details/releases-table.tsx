@@ -1,0 +1,161 @@
+import {
+  type ColumnDef,
+  type SortingState,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
+
+import { Button } from '@tesser-streams/ui/components/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@tesser-streams/ui/components/table';
+import { ArrowUpDown } from 'lucide-react';
+import { useState } from 'react';
+
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+}
+
+type ReleaseTransaction = {
+  hash: string;
+  amount: number;
+  timestamp: number;
+};
+
+export const data: ReleaseTransaction[] = [
+  {
+    hash: '728ed52f',
+    amount: 100,
+    timestamp: 123456789,
+  },
+  {
+    hash: '489e1d42',
+    amount: 125,
+    timestamp: 123456789,
+  },
+];
+
+export const columns: ColumnDef<ReleaseTransaction>[] = [
+  {
+    accessorKey: 'hash',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          TransactionHash
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: 'amount',
+    header: 'Amount',
+    cell: ({ row }) => {
+      const amount = Number.parseFloat(row.getValue('amount'));
+      const formatted = amount.toLocaleString();
+      return <div>{formatted}</div>;
+    },
+  },
+  {
+    accessorKey: 'timestamp',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Released At
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const timestamp = Number.parseInt(row.getValue('timestamp'));
+      const date = new Date(timestamp * 1000);
+      return <div>{date.toLocaleDateString()}</div>;
+    },
+  },
+];
+
+export const ReleasesTable = () => {
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+    },
+  });
+
+  return (
+    <div className='rounded-md border bg-[#08080A]'>
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead
+                    key={header.id}
+                    className='font-medium text-neutral-400 text-sm'
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows?.length > 0 ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && 'selected'}
+                className=' !border-none h-14 '
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell
+                    key={cell.id}
+                    className='border-none'
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell
+                colSpan={columns.length}
+                className='h-24 text-center'
+              >
+                No results.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
+  );
+};

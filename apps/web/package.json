@@ -19,6 +19,7 @@
     "@t3-oss/env-core": "^0.13.4",
     "@tanstack/react-query": "^5.76.2",
     "@tanstack/react-router": "^1.120.7",
+    "@tanstack/react-table": "^8.21.3",
     "@tanstack/router-devtools": "^1.120.7",
     "@tesser-streams/ui": "workspace:*",
     "lucide-react": "^0.511.0",

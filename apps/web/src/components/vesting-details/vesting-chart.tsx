@@ -8,40 +8,39 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@tesser-streams/ui/components/chart';
-import { useMemo } from 'react';
+
+export const description = 'A simple area chart';
 
 const chartConfig = {
-  vestedValue: {
-    label: 'Vested Value',
+  desktop: {
+    label: 'Desktop',
     color: 'var(--primary)',
   },
 } satisfies ChartConfig;
 
-interface VestingChartProps {
-  alpha: number;
-}
+const chartData = [
+  { month: 'January', desktop: 186 },
+  { month: 'February', desktop: 305 },
+  { month: 'March', desktop: 237 },
+  { month: 'April', desktop: 73 },
+  { month: 'May', desktop: 209 },
+  { month: 'June', desktop: 214 },
+  { month: 'July', desktop: 210 },
+  { month: 'August', desktop: 210 },
+  { month: 'September', desktop: 210 },
+  { month: 'October', desktop: 210 },
+  { month: 'November', desktop: 210 },
+  { month: 'December', desktop: 210 },
+];
 
-const maxValue = 1_000_000;
-
-const SECONDS_IN_A_DAY = 24 * 3600;
-const DAYS_IN_A_YEAR = 365;
-const totalDuration = DAYS_IN_A_YEAR * 24 * 3600;
-
-export const VestingChart = ({ alpha }: VestingChartProps) => {
-  const chartData = useMemo(() => {
-    return Array.from({ length: 365 }, (_, i) => i).map((d) => {
-      return {
-        dayIndex: d.toString(),
-        vestedValue: Math.floor(
-          maxValue * ((d * SECONDS_IN_A_DAY) / totalDuration) ** alpha
-        ),
-      };
-    });
-  }, [alpha]);
+export const VestingChart = () => {
   return (
     <Card>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer
+          config={chartConfig}
+          className='h-[16rem] w-full'
+        >
           <AreaChart
             accessibilityLayer={true}
             data={chartData}
@@ -49,19 +48,13 @@ export const VestingChart = ({ alpha }: VestingChartProps) => {
               left: 12,
               right: 12,
             }}
+            className=''
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey='dayIndex'
+              dataKey='month'
               tickLine={false}
               axisLine={false}
-              ticks={[
-                1, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360,
-              ]}
-              interval='preserveStartEnd'
-              tickCount={1}
-              minTickGap={3}
-              tickMargin={0}
             />
             <ChartTooltip
               cursor={false}
@@ -73,12 +66,12 @@ export const VestingChart = ({ alpha }: VestingChartProps) => {
               }
             />
             <Area
-              dataKey='vestedValue'
+              dataKey='desktop'
               layout='horizontal'
               type='natural'
-              fill='var(--primary)'
+              fill='var(--color-desktop)'
               fillOpacity={0.4}
-              stroke='var(--primary)'
+              stroke='var(--color-desktop)'
             />
           </AreaChart>
         </ChartContainer>
