@@ -1,3 +1,4 @@
+import { ManageSchedules } from '@/components/manage-schedules';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/dashboard/manage/')({
@@ -5,5 +6,9 @@ export const Route = createFileRoute('/dashboard/manage/')({
 });
 
 function RouteComponent() {
-  return <div>Hello "/dashboard/manage/"!</div>;
+  return (
+    <div>
+      <ManageSchedules />
+    </div>
+  );
 }

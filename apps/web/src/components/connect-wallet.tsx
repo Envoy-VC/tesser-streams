@@ -1,5 +1,4 @@
 import { useAppKit } from '@reown/appkit/react';
-import { useNavigate } from '@tanstack/react-router';
 import { Button } from '@tesser-streams/ui/components/button';
 import { Dialog, DialogContent } from '@tesser-streams/ui/components/dialog';
 import { LockKeyholeIcon } from 'lucide-react';
@@ -11,15 +10,11 @@ export const ConnectWallet = () => {
   const [open, setOpen] = useState<boolean>(true);
   const { open: openModal } = useAppKit();
 
-  const navigate = useNavigate();
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (address) {
       setOpen(false);
     } else {
       setOpen(true);
-      navigate({ to: '/dashboard' });
     }
   }, [address]);
 

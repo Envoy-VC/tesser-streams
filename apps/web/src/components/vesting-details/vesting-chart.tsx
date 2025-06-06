@@ -1,6 +1,7 @@
 'use client';
 import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
 
+import { computeChartData } from '@/lib/helpers';
 import { Card, CardContent } from '@tesser-streams/ui/components/card';
 import {
   type ChartConfig,
@@ -8,32 +9,37 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@tesser-streams/ui/components/chart';
+import { useMemo } from 'react';
 
 export const description = 'A simple area chart';
 
 const chartConfig = {
-  desktop: {
-    label: 'Desktop',
+  releasableAmount: {
+    label: 'Releasable Amount',
     color: 'var(--primary)',
   },
 } satisfies ChartConfig;
 
-const chartData = [
-  { month: 'January', desktop: 186 },
-  { month: 'February', desktop: 305 },
-  { month: 'March', desktop: 237 },
-  { month: 'April', desktop: 73 },
-  { month: 'May', desktop: 209 },
-  { month: 'June', desktop: 214 },
-  { month: 'July', desktop: 210 },
-  { month: 'August', desktop: 210 },
-  { month: 'September', desktop: 210 },
-  { month: 'October', desktop: 210 },
-  { month: 'November', desktop: 210 },
-  { month: 'December', desktop: 210 },
-];
+interface VestingChartProps {
+  schedule:
+    | {
+        beneficiary: `0x${string}`;
+        token: `0x${string}`;
+        startTime: number;
+        cliffDuration: number;
+        vestingDuration: number;
+        alpha: bigint;
+        totalAmount: bigint;
+        released: bigint;
+        frozen: boolean;
+      }
+    | undefined;
+}
 
-export const VestingChart = () => {
+export const VestingChart = ({ schedule }: VestingChartProps) => {
+  const chartData = useMemo(() => {
+    return computeChartData(schedule);
+  }, [schedule]);
   return (
     <Card>
       <CardContent>
@@ -52,26 +58,21 @@ export const VestingChart = () => {
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey='month'
+              dataKey='timestamp'
               tickLine={false}
               axisLine={false}
             />
             <ChartTooltip
               cursor={false}
-              content={
-                <ChartTooltipContent
-                  indicator='dot'
-                  labelClassName='flex gap-2'
-                />
-              }
+              content={<ChartTooltipContent indicator='dot' />}
             />
             <Area
-              dataKey='desktop'
+              dataKey='releasableAmount'
               layout='horizontal'
               type='natural'
-              fill='var(--color-desktop)'
+              fill='var(--primary)'
               fillOpacity={0.4}
-              stroke='var(--color-desktop)'
+              stroke='var(--primary)'
             />
           </AreaChart>
         </ChartContainer>

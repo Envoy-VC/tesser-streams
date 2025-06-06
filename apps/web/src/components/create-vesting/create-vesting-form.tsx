@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from '@tesser-streams/ui/components/select';
 
+import { db } from '@/db';
 import { getDuration } from '@/lib/helpers';
 import { Contracts, wagmiAdapter } from '@/lib/wagmi';
 import { Input } from '@tesser-streams/ui/components/input';
@@ -28,8 +29,8 @@ import { readContract, waitForTransactionReceipt } from '@wagmi/core';
 import { CirclePlusIcon, Loader2Icon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { parseEther } from 'viem';
-import { useAccount, useWriteContract } from 'wagmi';
+import { parseEther, parseEventLogs } from 'viem';
+import { useAccount, useWatchContractEvent, useWriteContract } from 'wagmi';
 import { VestingChart } from './vesting-chart';
 
 const alphaValues = [
@@ -96,6 +97,14 @@ export const CreateVestingForm = () => {
     },
   });
 
+  useWatchContractEvent({
+    ...Contracts.vestingCore,
+    eventName: 'ScheduleCreated',
+    onLogs(logs) {
+      console.log('New logs!', logs);
+    },
+  });
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setIsCreating(true);
@@ -149,7 +158,30 @@ export const CreateVestingForm = () => {
           parseEther(values.alpha.toString()),
         ],
       });
-      await waitForTransactionReceipt(wagmiAdapter.wagmiConfig, { hash });
+      const receipt = await waitForTransactionReceipt(
+        wagmiAdapter.wagmiConfig,
+        { hash }
+      );
+      const logs = parseEventLogs({
+        abi: Contracts.vestingCore.abi,
+        logs: receipt.logs,
+      });
+      const log = logs.find((log) => log.eventName === 'ScheduleCreated');
+      const args = log?.args;
+      if (!log) {
+        throw new Error('Unable to get Vesting Schedule');
+      }
+      await db.schedules.add({
+        vestingId: log.args.vestingId,
+        beneficiary: values.beneficiary,
+        token: Contracts.token.address,
+        totalAmount: log.args.totalAmount,
+        feeAmount: log.args.feeAmount,
+        cliffDuration,
+        vestingDuration,
+        alpha: values.alpha,
+        startAt: Math.floor(Date.now() / 1000),
+      });
       toast.success('Successfully created vesting schedule');
       form.reset({
         beneficiary: address ?? undefined,
@@ -386,3 +418,144 @@ export const CreateVestingForm = () => {
     </div>
   );
 };
+
+/**
+ * blockHash
+: 
+"0x848f796df7b9cd35f60d0c4a0949cce3ca9c5bda493aec323045dd52321d4256"
+blockNumber
+: 
+121350n
+chainId
+: 
+420420421
+contractAddress
+: 
+null
+cumulativeGasUsed
+: 
+0n
+effectiveGasPrice
+: 
+1200n
+from
+: 
+"0xff35d8572e3cac8e8d96a24e8dcbfb8e1d1f1ca6"
+gasUsed
+: 
+330564150833n
+logs
+: 
+Array(3)
+0
+: 
+address
+: 
+"0x8444ec14c268fc49a8edf4543b92dc846fe8f049"
+blockHash
+: 
+"0x848f796df7b9cd35f60d0c4a0949cce3ca9c5bda493aec323045dd52321d4256"
+blockNumber
+: 
+121350n
+data
+: 
+"0x0000000000000000000000000000000000000000000000056bc75e2d63100000"
+logIndex
+: 
+4
+topics
+: 
+(3) ['0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef', '0x000000000000000000000000ff35d8572e3cac8e8d96a24e8dcbfb8e1d1f1ca6', '0x0000000000000000000000009bad627831cf36c6d9c0e62a37dfd886b9087818']
+transactionHash
+: 
+"0x09016cdf99fb3a11d14bf42f6ad5e15a16e05b16b8779a5b5c23910004c45407"
+transactionIndex
+: 
+2
+[[Prototype]]
+: 
+Object
+1
+: 
+address
+: 
+"0x8444ec14c268fc49a8edf4543b92dc846fe8f049"
+blockHash
+: 
+"0x848f796df7b9cd35f60d0c4a0949cce3ca9c5bda493aec323045dd52321d4256"
+blockNumber
+: 
+121350n
+data
+: 
+"0x0000000000000000000000000000000000000000000000004563918244f40000"
+logIndex
+: 
+5
+topics
+: 
+(3) ['0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef', '0x0000000000000000000000009bad627831cf36c6d9c0e62a37dfd886b9087818', '0x000000000000000000000000ff35d8572e3cac8e8d96a24e8dcbfb8e1d1f1ca6']
+transactionHash
+: 
+"0x09016cdf99fb3a11d14bf42f6ad5e15a16e05b16b8779a5b5c23910004c45407"
+transactionIndex
+: 
+2
+[[Prototype]]
+: 
+Object
+2
+: 
+address
+: 
+"0x9bad627831cf36c6d9c0e62a37dfd886b9087818"
+blockHash
+: 
+"0x848f796df7b9cd35f60d0c4a0949cce3ca9c5bda493aec323045dd52321d4256"
+blockNumber
+: 
+121350n
+data
+: 
+"0x0000000000000000000000008444ec14c268fc49a8edf4543b92dc846fe8f0490000000000000000000000000000000000000000000000052663ccab1e1c00000000000000000000000000000000000000000000000000004563918244f40000"
+logIndex
+: 
+6
+topics
+: 
+(3) ['0x79a25b68bf41feb92c04f0092828f67b8e19a21f057e3ffe1d48ed40f4c5b94f', '0xd23fb1e703b7eb403658449be06aec916065009b9154fc479106133a9ec1a5af', '0x000000000000000000000000ff35d8572e3cac8e8d96a24e8dcbfb8e1d1f1ca6']
+transactionHash
+: 
+"0x09016cdf99fb3a11d14bf42f6ad5e15a16e05b16b8779a5b5c23910004c45407"
+transactionIndex
+: 
+2
+[[Prototype]]
+: 
+Object
+length
+: 
+3
+[[Prototype]]
+: 
+Array(0)
+logsBloom
+: 
+"0x00000000000000000000200000000000000000000000000000080000000000000000000000000008000000000000010008000000000000000000000000000000000000020000000000080008000010000000000000000000000000000000000000000000000000000000000010000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000200000401000000000000000000000000000000000000000004000000080000000000000000000000002000000000000000800000000000000000000000000000000000080000000100000000000000000000000000000000000000000000000020000000000"
+status
+: 
+"success"
+to
+: 
+"0x9bad627831cf36c6d9c0e62a37dfd886b9087818"
+transactionHash
+: 
+"0x09016cdf99fb3a11d14bf42f6ad5e15a16e05b16b8779a5b5c23910004c45407"
+transactionIndex
+: 
+2
+type
+: 
+"eip1559"
+ */

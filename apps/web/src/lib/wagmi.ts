@@ -3,7 +3,7 @@ import { createAppKit } from '@reown/appkit/react';
 import { http, createConfig } from 'wagmi';
 
 import { env } from '@/env';
-import { defineChain } from 'viem';
+import { createPublicClient, defineChain } from 'viem';
 import { DIAMOND_CUT_ABI } from './abi/cut';
 import { TOKEN_ABI } from './abi/token';
 import { VESTING_CORE_ABI } from './abi/vesting-core';
@@ -22,6 +22,11 @@ const assetHub = defineChain({
       http: ['https://testnet-passet-hub-eth-rpc.polkadot.io'],
     },
   },
+});
+
+export const publicClient = createPublicClient({
+  chain: assetHub,
+  transport: http(),
 });
 
 const config = createConfig({
