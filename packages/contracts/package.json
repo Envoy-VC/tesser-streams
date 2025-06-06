@@ -7,8 +7,8 @@
   },
   "scripts": {
     "compile": "npx hardhat compile",
-    "deploy:local": "rm -rf ./ignition/deployments && npx hardhat ignition deploy ignition/modules/deploy-tesser.ts --network localNode",
-    "deploy:live": "rm -rf ./ignition/deployments && npx hardhat ignition deploy ignition/modules/deploy-tesser.ts --network polkadotHubTestnet"
+    "deploy:local": "npx hardhat run hardhat-scripts/deploy.ts --network localNode",
+    "deploy:live": "npx hardhat run hardhat-scripts/deploy.ts --network polkadotHubTestnet"
   },
   "keywords": [],
   "author": "",
