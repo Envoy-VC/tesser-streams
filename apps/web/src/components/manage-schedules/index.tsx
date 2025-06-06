@@ -19,7 +19,7 @@ export const ManageSchedules = () => {
           View and manage your schedules.
         </div>
       </div>
-      <div className='my-6 flex flex-row flex-wrap items-center'>
+      <div className='my-6 flex flex-row flex-wrap items-center gap-3'>
         {schedules?.map((schedule) => (
           <div
             key={schedule.vestingId}
