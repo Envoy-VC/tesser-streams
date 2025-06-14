@@ -7,8 +7,14 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {OwnershipFacet} from "./OwnershipFacet.sol";
 import {VestingMathFacet} from "./VestingMathFacet.sol";
 
+// Token
+import {FractionalStreamNFT} from "../FractionalStreamNFT.sol";
+
 // Storage
 import {VestingStorageLib} from "../libraries/VestingStorage.sol";
+
+// Registry Facet
+import {ERC6551RegistryFacet} from "./ERC6551RegistryFacet.sol";
 
 contract VestingCoreFacet {
     using SafeERC20 for IERC20;
@@ -18,7 +24,9 @@ contract VestingCoreFacet {
         address indexed beneficiary,
         address token,
         uint256 totalAmount,
-        uint256 feeAmount
+        uint256 feeAmount,
+        address accountAddress,
+        uint256 tokenId
     );
 
     event TokensReleased(
@@ -35,7 +43,7 @@ contract VestingCoreFacet {
 
     function createVestingSchedule(
         address beneficiary,
-        address token,
+        address tokenAddress,
         uint256 totalAmount,
         uint40 cliffDuration,
         uint40 vestingDuration,
@@ -46,52 +54,93 @@ contract VestingCoreFacet {
 
         // Validate Inputs
         require(beneficiary != address(0), "Zero beneficiary");
-        require(token != address(0), "Zero token");
+        require(tokenAddress != address(0), "Zero token");
         require(totalAmount > 0, "Zero amount");
         require(vestingDuration > 0, "Zero duration");
         require(VestingStorageLib.isValidAlpha(alpha), "Invalid alpha");
 
+        IERC20 token = IERC20(tokenAddress);
+
         // TODO: Step 1: Mint a fsNFT with beneficiary as owner
+        FractionalStreamNFT fsNFT = FractionalStreamNFT(vs.fractionalStreamNFT);
+        uint256 tokenId = fsNFT.safeMint(beneficiary);
+
         // TODO: Step 2: Deploy ERC6551Account with that token
+        ERC6551RegistryFacet erc6551Registry = ERC6551RegistryFacet(
+            address(this)
+        );
+        address accountAddress = erc6551Registry.createAccount(
+            vs.accountImplementation,
+            block.chainid,
+            vs.fractionalStreamNFT,
+            tokenId
+        );
 
         // Calculate and collect protocol fee
         uint256 feeAmount = (totalAmount * vs.protocolFeeBps) / 10000;
         uint256 netAmount = totalAmount - feeAmount;
 
         // Transfer tokens from sender
-        IERC20(token).safeTransferFrom(msg.sender, address(this), totalAmount);
+        token.safeTransferFrom(msg.sender, address(this), totalAmount);
 
         // Transfer fee to treasury
         if (feeAmount > 0) {
-            IERC20(token).safeTransfer(vs.treasury, feeAmount);
+            token.safeTransfer(vs.treasury, feeAmount);
         }
 
         // Generate unique vesting ID
         vestingId = keccak256(
-            abi.encode(beneficiary, token, block.timestamp, vs.vestingNonce)
+            abi.encode(
+                tokenAddress,
+                totalAmount,
+                cliffDuration,
+                vestingDuration,
+                alpha,
+                vs.vestingNonce,
+                tokenId
+            )
         );
         vs.vestingNonce++;
 
         vs.vestingSchedules[vestingId] = VestingStorageLib.VestingSchedule({
-            beneficiary: beneficiary,
-            token: token,
+            tokenAddress: tokenAddress,
             startTime: uint40(block.timestamp),
             cliffDuration: cliffDuration,
             vestingDuration: vestingDuration,
             alpha: alpha,
             totalAmount: netAmount,
             released: 0,
-            frozen: false
+            frozen: false,
+            accountAddress: accountAddress,
+            tokenId: tokenId
         });
 
         emit ScheduleCreated(
             vestingId,
             beneficiary,
-            token,
+            tokenAddress,
             netAmount,
-            feeAmount
+            feeAmount,
+            accountAddress,
+            tokenId
         );
         return vestingId;
+    }
+
+    function getBeneficiaryForVestingId(
+        bytes32 vestingId
+    ) public view returns (address) {
+        VestingStorageLib.VestingStorage storage vs = VestingStorageLib
+            .vestingStorage();
+        VestingStorageLib.VestingSchedule memory schedule = vs.vestingSchedules[
+            vestingId
+        ];
+
+        address owner = FractionalStreamNFT(vs.fractionalStreamNFT).ownerOf(
+            schedule.tokenId
+        );
+
+        return owner;
     }
 
     function release(bytes32 vestingId) public {
@@ -100,7 +149,8 @@ contract VestingCoreFacet {
             .vestingSchedules[vestingId];
 
         // Validate access and state
-        require(msg.sender == schedule.beneficiary, "Unauthorized");
+        address beneficiary = getBeneficiaryForVestingId(vestingId);
+        require(msg.sender == beneficiary, "Not a beneficiary");
         require(!schedule.frozen, "Schedule frozen");
         require(schedule.startTime > 0, "Invalid schedule");
 
@@ -113,9 +163,8 @@ contract VestingCoreFacet {
         schedule.released += releasable;
 
         // Transfer tokens
-        IERC20(schedule.token).safeTransfer(schedule.beneficiary, releasable);
-
-        emit TokensReleased(vestingId, schedule.beneficiary, releasable);
+        IERC20(schedule.tokenAddress).safeTransfer(beneficiary, releasable);
+        emit TokensReleased(vestingId, beneficiary, releasable);
     }
 
     function getVestingSchedule(

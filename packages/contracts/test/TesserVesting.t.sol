@@ -57,6 +57,12 @@ contract TesserVestingTests is Test, SetUp {
             alpha
         );
 
+        VestingStorageLib.VestingSchedule memory ss = vestingCoreFacet
+            .getVestingSchedule(vestingId);
+
+        console.log("TokenId", ss.tokenId);
+        console.log("Account Address", address(ss.accountAddress));
+
         uint256 vestedAmount = getVestedAmount(vestingId);
         uint256 releasableAmount = getReleasableAmount(vestingId);
         assertEq(vestedAmount, 0);

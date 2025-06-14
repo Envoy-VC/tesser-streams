@@ -30,6 +30,9 @@ import {IDiamondCut} from "../../src/interfaces/IDiamondCut.sol";
 import {Account as ERC6551Account} from "../../src/Account.sol";
 import {AccountProxy} from "../../src/AccountProxy.sol";
 
+// Token
+import {FractionalStreamNFT} from "../../src/FractionalStreamNFT.sol";
+
 contract SetUp is Test {
     Vm.Wallet public owner;
 
@@ -49,6 +52,7 @@ contract SetUp is Test {
 
     // Token
     TesserToken public tesserToken;
+    FractionalStreamNFT public fsNFT;
 
     bool public __setUpDone;
 
@@ -164,6 +168,9 @@ contract SetUp is Test {
         // Deploy Implementation Contract
         ERC6551Account implementation = new ERC6551Account();
 
+        // Deploy FractionalStreamNFT
+        fsNFT = new FractionalStreamNFT(owner.addr, address(tesserProxy));
+
         // Add Facet Cuts with Initializer
         cut.diamondCut(
             facetCuts,
@@ -172,7 +179,8 @@ contract SetUp is Test {
                 TesserInit.init.selector,
                 owner.addr,
                 500,
-                address(implementation)
+                address(implementation),
+                address(fsNFT)
             ) // 5% protocol fee
         );
     }

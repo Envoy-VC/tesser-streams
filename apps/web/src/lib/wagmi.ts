@@ -9,7 +9,7 @@ import { TOKEN_ABI } from './abi/token';
 import { VESTING_CORE_ABI } from './abi/vesting-core';
 import { VESTING_MATH_ABI } from './abi/vesting-math';
 const assetHub = defineChain({
-  id: 420420421,
+  id: 420420422,
   name: 'polkadot-hub-testnet',
   network: 'polkadot-hub-testnet',
   nativeCurrency: {
@@ -19,7 +19,7 @@ const assetHub = defineChain({
   },
   rpcUrls: {
     default: {
-      http: ['https://testnet-passet-hub-eth-rpc.polkadot.io'],
+      http: ['https://testnet-passet-hub-eth-rpc.polkadot.io/'],
     },
   },
 });

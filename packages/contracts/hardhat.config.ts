@@ -18,6 +18,9 @@ const config: HardhatUserConfig = {
   resolc: {
     version: '1.5.2',
     compilerSource: 'npm',
+    settings: {
+      optimizer: {},
+    },
   },
   networks: {
     hardhat: {
