@@ -14,10 +14,18 @@ contract VestingCoreFacet {
     using SafeERC20 for IERC20;
 
     event ScheduleCreated(
-        bytes32 indexed vestingId, address indexed beneficiary, address token, uint256 totalAmount, uint256 feeAmount
+        bytes32 indexed vestingId,
+        address indexed beneficiary,
+        address token,
+        uint256 totalAmount,
+        uint256 feeAmount
     );
 
-    event TokensReleased(bytes32 indexed vestingId, address beneficiary, uint256 amount);
+    event TokensReleased(
+        bytes32 indexed vestingId,
+        address beneficiary,
+        uint256 amount
+    );
 
     modifier onlyOwner() {
         address owner = OwnershipFacet(address(this)).owner();
@@ -33,10 +41,10 @@ contract VestingCoreFacet {
         uint40 vestingDuration,
         uint256 alpha
     ) public returns (bytes32 vestingId) {
-        VestingStorageLib.VestingStorage storage vs = VestingStorageLib.vestingStorage();
+        VestingStorageLib.VestingStorage storage vs = VestingStorageLib
+            .vestingStorage();
 
         // Validate Inputs
-        // Validate inputs
         require(beneficiary != address(0), "Zero beneficiary");
         require(token != address(0), "Zero token");
         require(totalAmount > 0, "Zero amount");
@@ -56,7 +64,9 @@ contract VestingCoreFacet {
         }
 
         // Generate unique vesting ID
-        vestingId = keccak256(abi.encode(beneficiary, token, block.timestamp, vs.vestingNonce));
+        vestingId = keccak256(
+            abi.encode(beneficiary, token, block.timestamp, vs.vestingNonce)
+        );
         vs.vestingNonce++;
 
         vs.vestingSchedules[vestingId] = VestingStorageLib.VestingSchedule({
@@ -71,13 +81,23 @@ contract VestingCoreFacet {
             frozen: false
         });
 
-        emit ScheduleCreated(vestingId, beneficiary, token, netAmount, feeAmount);
+        // TODO: Mint NFT
+        // TODO: Deploy ERC6551Account
+
+        emit ScheduleCreated(
+            vestingId,
+            beneficiary,
+            token,
+            netAmount,
+            feeAmount
+        );
         return vestingId;
     }
 
     function release(bytes32 vestingId) public {
-        VestingStorageLib.VestingStorage storage vs = VestingStorageLib.vestingStorage();
-        VestingStorageLib.VestingSchedule storage schedule = vs.vestingSchedules[vestingId];
+        VestingStorageLib.VestingSchedule storage schedule = VestingStorageLib
+            .vestingStorage()
+            .vestingSchedules[vestingId];
 
         // Validate access and state
         require(msg.sender == schedule.beneficiary, "Unauthorized");
@@ -85,7 +105,8 @@ contract VestingCoreFacet {
         require(schedule.startTime > 0, "Invalid schedule");
 
         // Calculate releasable amount
-        uint256 releasable = VestingMathFacet(address(this)).computeReleasableAmount(vestingId);
+        uint256 releasable = VestingMathFacet(address(this))
+            .computeReleasableAmount(vestingId);
         require(releasable > 0, "Nothing to release");
 
         // Update state
@@ -97,8 +118,11 @@ contract VestingCoreFacet {
         emit TokensReleased(vestingId, schedule.beneficiary, releasable);
     }
 
-    function getVestingSchedule(bytes32 vestingId) public view returns (VestingStorageLib.VestingSchedule memory) {
-        VestingStorageLib.VestingStorage storage vs = VestingStorageLib.vestingStorage();
+    function getVestingSchedule(
+        bytes32 vestingId
+    ) public view returns (VestingStorageLib.VestingSchedule memory) {
+        VestingStorageLib.VestingStorage storage vs = VestingStorageLib
+            .vestingStorage();
         return vs.vestingSchedules[vestingId];
     }
 }
