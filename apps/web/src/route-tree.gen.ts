@@ -14,6 +14,7 @@ import { Route as rootRoute } from './app/__root';
 import { Route as DashboardRouteImport } from './app/dashboard/route';
 import { Route as IndexImport } from './app/index';
 import { Route as DashboardIndexImport } from './app/dashboard/index';
+import { Route as DashboardSettingsImport } from './app/dashboard/settings';
 import { Route as DashboardMintImport } from './app/dashboard/mint';
 import { Route as DashboardCreateImport } from './app/dashboard/create';
 import { Route as DashboardManageIndexImport } from './app/dashboard/manage/index';
@@ -36,6 +37,12 @@ const IndexRoute = IndexImport.update({
 const DashboardIndexRoute = DashboardIndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => DashboardRouteRoute,
+} as any);
+
+const DashboardSettingsRoute = DashboardSettingsImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => DashboardRouteRoute,
 } as any);
 
@@ -95,6 +102,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardMintImport;
       parentRoute: typeof DashboardRouteImport;
     };
+    '/dashboard/settings': {
+      id: '/dashboard/settings';
+      path: '/settings';
+      fullPath: '/dashboard/settings';
+      preLoaderRoute: typeof DashboardSettingsImport;
+      parentRoute: typeof DashboardRouteImport;
+    };
     '/dashboard/': {
       id: '/dashboard/';
       path: '/';
@@ -124,6 +138,7 @@ declare module '@tanstack/react-router' {
 interface DashboardRouteRouteChildren {
   DashboardCreateRoute: typeof DashboardCreateRoute;
   DashboardMintRoute: typeof DashboardMintRoute;
+  DashboardSettingsRoute: typeof DashboardSettingsRoute;
   DashboardIndexRoute: typeof DashboardIndexRoute;
   DashboardManageVestingIdRoute: typeof DashboardManageVestingIdRoute;
   DashboardManageIndexRoute: typeof DashboardManageIndexRoute;
@@ -132,6 +147,7 @@ interface DashboardRouteRouteChildren {
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardCreateRoute: DashboardCreateRoute,
   DashboardMintRoute: DashboardMintRoute,
+  DashboardSettingsRoute: DashboardSettingsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardManageVestingIdRoute: DashboardManageVestingIdRoute,
   DashboardManageIndexRoute: DashboardManageIndexRoute,
@@ -146,6 +162,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRouteRouteWithChildren;
   '/dashboard/create': typeof DashboardCreateRoute;
   '/dashboard/mint': typeof DashboardMintRoute;
+  '/dashboard/settings': typeof DashboardSettingsRoute;
   '/dashboard/': typeof DashboardIndexRoute;
   '/dashboard/manage/$vestingId': typeof DashboardManageVestingIdRoute;
   '/dashboard/manage': typeof DashboardManageIndexRoute;
@@ -155,6 +172,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute;
   '/dashboard/create': typeof DashboardCreateRoute;
   '/dashboard/mint': typeof DashboardMintRoute;
+  '/dashboard/settings': typeof DashboardSettingsRoute;
   '/dashboard': typeof DashboardIndexRoute;
   '/dashboard/manage/$vestingId': typeof DashboardManageVestingIdRoute;
   '/dashboard/manage': typeof DashboardManageIndexRoute;
@@ -166,6 +184,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRouteRouteWithChildren;
   '/dashboard/create': typeof DashboardCreateRoute;
   '/dashboard/mint': typeof DashboardMintRoute;
+  '/dashboard/settings': typeof DashboardSettingsRoute;
   '/dashboard/': typeof DashboardIndexRoute;
   '/dashboard/manage/$vestingId': typeof DashboardManageVestingIdRoute;
   '/dashboard/manage/': typeof DashboardManageIndexRoute;
@@ -178,6 +197,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/dashboard/create'
     | '/dashboard/mint'
+    | '/dashboard/settings'
     | '/dashboard/'
     | '/dashboard/manage/$vestingId'
     | '/dashboard/manage';
@@ -186,6 +206,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard/create'
     | '/dashboard/mint'
+    | '/dashboard/settings'
     | '/dashboard'
     | '/dashboard/manage/$vestingId'
     | '/dashboard/manage';
@@ -195,6 +216,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/dashboard/create'
     | '/dashboard/mint'
+    | '/dashboard/settings'
     | '/dashboard/'
     | '/dashboard/manage/$vestingId'
     | '/dashboard/manage/';
@@ -233,6 +255,7 @@ export const routeTree = rootRoute
       "children": [
         "/dashboard/create",
         "/dashboard/mint",
+        "/dashboard/settings",
         "/dashboard/",
         "/dashboard/manage/$vestingId",
         "/dashboard/manage/"
@@ -244,6 +267,10 @@ export const routeTree = rootRoute
     },
     "/dashboard/mint": {
       "filePath": "dashboard/mint.tsx",
+      "parent": "/dashboard"
+    },
+    "/dashboard/settings": {
+      "filePath": "dashboard/settings.tsx",
       "parent": "/dashboard"
     },
     "/dashboard/": {

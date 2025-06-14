@@ -33,7 +33,7 @@ function RouteComponent() {
             Quick overview of your current vesting schedules and listings.
           </div>
         </div>
-        <div className='flex h-full w-full flex-row items-center justify-between rounded-xl bg-[#0f0f0f]'>
+        <div className='flex h-full w-full flex-row items-center justify-between rounded-xl bg-[#0f0f0f] px-4'>
           <div className='flex w-full basis-1/2 flex-col px-4 py-6'>
             <div className='flex flex-row items-center gap-2'>
               <div className='size-2 rounded-full bg-[#A394F4]' />
@@ -50,7 +50,7 @@ function RouteComponent() {
               </div>
             </div>
           </div>
-          <div className='flex w-full basis-1/2 flex-col rounded-xl bg-[#0B0B0D] p-4'>
+          <div className='flex w-full basis-1/2 flex-col rounded-xl bg-[#0B0B0D] px-4 py-3'>
             <div className='flex flex-row items-center gap-2'>
               <div className='text-neutral-600 text-xs'>Released Amount</div>
             </div>
