@@ -16,6 +16,7 @@ import { Route as IndexImport } from './app/index';
 import { Route as DashboardIndexImport } from './app/dashboard/index';
 import { Route as DashboardSettingsImport } from './app/dashboard/settings';
 import { Route as DashboardMintImport } from './app/dashboard/mint';
+import { Route as DashboardMarketplaceImport } from './app/dashboard/marketplace';
 import { Route as DashboardCreateImport } from './app/dashboard/create';
 import { Route as DashboardManageIndexImport } from './app/dashboard/manage/index';
 import { Route as DashboardManageVestingIdImport } from './app/dashboard/manage/$vestingId';
@@ -49,6 +50,12 @@ const DashboardSettingsRoute = DashboardSettingsImport.update({
 const DashboardMintRoute = DashboardMintImport.update({
   id: '/mint',
   path: '/mint',
+  getParentRoute: () => DashboardRouteRoute,
+} as any);
+
+const DashboardMarketplaceRoute = DashboardMarketplaceImport.update({
+  id: '/marketplace',
+  path: '/marketplace',
   getParentRoute: () => DashboardRouteRoute,
 } as any);
 
@@ -95,6 +102,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardCreateImport;
       parentRoute: typeof DashboardRouteImport;
     };
+    '/dashboard/marketplace': {
+      id: '/dashboard/marketplace';
+      path: '/marketplace';
+      fullPath: '/dashboard/marketplace';
+      preLoaderRoute: typeof DashboardMarketplaceImport;
+      parentRoute: typeof DashboardRouteImport;
+    };
     '/dashboard/mint': {
       id: '/dashboard/mint';
       path: '/mint';
@@ -137,6 +151,7 @@ declare module '@tanstack/react-router' {
 
 interface DashboardRouteRouteChildren {
   DashboardCreateRoute: typeof DashboardCreateRoute;
+  DashboardMarketplaceRoute: typeof DashboardMarketplaceRoute;
   DashboardMintRoute: typeof DashboardMintRoute;
   DashboardSettingsRoute: typeof DashboardSettingsRoute;
   DashboardIndexRoute: typeof DashboardIndexRoute;
@@ -146,6 +161,7 @@ interface DashboardRouteRouteChildren {
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardCreateRoute: DashboardCreateRoute,
+  DashboardMarketplaceRoute: DashboardMarketplaceRoute,
   DashboardMintRoute: DashboardMintRoute,
   DashboardSettingsRoute: DashboardSettingsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
@@ -161,6 +177,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute;
   '/dashboard': typeof DashboardRouteRouteWithChildren;
   '/dashboard/create': typeof DashboardCreateRoute;
+  '/dashboard/marketplace': typeof DashboardMarketplaceRoute;
   '/dashboard/mint': typeof DashboardMintRoute;
   '/dashboard/settings': typeof DashboardSettingsRoute;
   '/dashboard/': typeof DashboardIndexRoute;
@@ -171,6 +188,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute;
   '/dashboard/create': typeof DashboardCreateRoute;
+  '/dashboard/marketplace': typeof DashboardMarketplaceRoute;
   '/dashboard/mint': typeof DashboardMintRoute;
   '/dashboard/settings': typeof DashboardSettingsRoute;
   '/dashboard': typeof DashboardIndexRoute;
@@ -183,6 +201,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute;
   '/dashboard': typeof DashboardRouteRouteWithChildren;
   '/dashboard/create': typeof DashboardCreateRoute;
+  '/dashboard/marketplace': typeof DashboardMarketplaceRoute;
   '/dashboard/mint': typeof DashboardMintRoute;
   '/dashboard/settings': typeof DashboardSettingsRoute;
   '/dashboard/': typeof DashboardIndexRoute;
@@ -196,6 +215,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/dashboard/create'
+    | '/dashboard/marketplace'
     | '/dashboard/mint'
     | '/dashboard/settings'
     | '/dashboard/'
@@ -205,6 +225,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/dashboard/create'
+    | '/dashboard/marketplace'
     | '/dashboard/mint'
     | '/dashboard/settings'
     | '/dashboard'
@@ -215,6 +236,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/dashboard/create'
+    | '/dashboard/marketplace'
     | '/dashboard/mint'
     | '/dashboard/settings'
     | '/dashboard/'
@@ -254,6 +276,7 @@ export const routeTree = rootRoute
       "filePath": "dashboard/route.tsx",
       "children": [
         "/dashboard/create",
+        "/dashboard/marketplace",
         "/dashboard/mint",
         "/dashboard/settings",
         "/dashboard/",
@@ -263,6 +286,10 @@ export const routeTree = rootRoute
     },
     "/dashboard/create": {
       "filePath": "dashboard/create.tsx",
+      "parent": "/dashboard"
+    },
+    "/dashboard/marketplace": {
+      "filePath": "dashboard/marketplace.tsx",
       "parent": "/dashboard"
     },
     "/dashboard/mint": {

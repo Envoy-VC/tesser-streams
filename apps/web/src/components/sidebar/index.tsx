@@ -41,7 +41,7 @@ const navItems = [
   },
   {
     title: 'Marketplace',
-    href: '/dashboard/market',
+    href: '/dashboard/marketplace',
     icon: StoreIcon,
   },
 ];
