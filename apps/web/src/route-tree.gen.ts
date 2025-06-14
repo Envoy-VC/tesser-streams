@@ -11,13 +11,13 @@
 // Import Routes
 
 import { Route as rootRoute } from './app/__root';
+import { Route as DashboardCreateImport } from './app/dashboard/create';
+import { Route as DashboardIndexImport } from './app/dashboard/index';
+import { Route as DashboardManageVestingIdImport } from './app/dashboard/manage/$vestingId';
+import { Route as DashboardManageIndexImport } from './app/dashboard/manage/index';
+import { Route as DashboardMintImport } from './app/dashboard/mint';
 import { Route as DashboardRouteImport } from './app/dashboard/route';
 import { Route as IndexImport } from './app/index';
-import { Route as DashboardIndexImport } from './app/dashboard/index';
-import { Route as DashboardMintImport } from './app/dashboard/mint';
-import { Route as DashboardCreateImport } from './app/dashboard/create';
-import { Route as DashboardManageIndexImport } from './app/dashboard/manage/index';
-import { Route as DashboardManageVestingIdImport } from './app/dashboard/manage/$vestingId';
 
 // Create/Update Routes
 

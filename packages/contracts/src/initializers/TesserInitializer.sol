@@ -7,11 +7,13 @@ import {TesserProxyLib} from "../libraries/TesserProxyLib.sol";
 import {IDiamondLoupe} from "../interfaces/IDiamondLoupe.sol";
 import {IDiamondCut} from "../interfaces/IDiamondCut.sol";
 import {IERC173} from "../interfaces/IERC173.sol";
+import {IERC6551Registry} from "../interfaces/IERC6551Registry.sol";
 import {IERC165} from "@openzeppelin/contracts/interfaces/IERC165.sol";
 
 // Storage
 import {OwnershipStorageLib} from "../libraries/OwnershipStorage.sol";
 import {VestingStorageLib} from "../libraries/VestingStorage.sol";
+import {ERC6551RegistryStorageLib} from "../libraries/ERC6551RegistryStorage.sol";
 
 /// @title TesserInit
 /// @notice Initialization contract for the Tesser Diamond proxy
@@ -22,7 +24,12 @@ contract TesserInit {
     /// @notice Initializes the diamond proxy with required interfaces and state variables
     /// @param _treasury The address of the treasury
     /// @param _protocolFeeBps The protocol fee in basis points
-    function init(address _treasury, uint16 _protocolFeeBps) public {
+    /// @param _initialImplementation The address of the initial implementation contract
+    function init(
+        address _treasury,
+        uint16 _protocolFeeBps,
+        address _initialImplementation
+    ) public {
         // adding ERC165 data
         TesserProxyLib.DiamondStorage storage ds = TesserProxyLib
             .diamondStorage();
@@ -30,7 +37,9 @@ contract TesserInit {
         ds.supportedInterfaces[type(IDiamondCut).interfaceId] = true;
         ds.supportedInterfaces[type(IDiamondLoupe).interfaceId] = true;
         ds.supportedInterfaces[type(IERC173).interfaceId] = true;
+        ds.supportedInterfaces[type(IERC6551Registry).interfaceId] = true;
 
         VestingStorageLib.initVesting(_treasury, _protocolFeeBps);
+        ERC6551RegistryStorageLib.initERC6551Registry(_initialImplementation);
     }
 }

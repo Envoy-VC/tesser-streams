@@ -12,6 +12,7 @@ import {DiamondLoupeFacet} from "../../src/facets/DiamondLoupeFacet.sol";
 import {OwnershipFacet} from "../../src/facets/OwnershipFacet.sol";
 import {VestingCoreFacet} from "../../src/facets/VestingCoreFacet.sol";
 import {VestingMathFacet} from "../../src/facets/VestingMathFacet.sol";
+import {ERC6551RegistryFacet} from "../../src/facets/ERC6551RegistryFacet.sol";
 
 // Token
 import {TesserToken} from "../../src/TesserToken.sol";
@@ -25,6 +26,10 @@ import {TesserProxyLib} from "../../src/libraries/TesserProxyLib.sol";
 // Interfaces
 import {IDiamondCut} from "../../src/interfaces/IDiamondCut.sol";
 
+// ERC6551
+import {Account as ERC6551Account} from "../../src/Account.sol";
+import {AccountProxy} from "../../src/AccountProxy.sol";
+
 contract SetUp is Test {
     Vm.Wallet public owner;
 
@@ -37,6 +42,7 @@ contract SetUp is Test {
     OwnershipFacet public ownershipFacet;
     VestingCoreFacet public vestingCoreFacet;
     VestingMathFacet public vestingMathFacet;
+    ERC6551RegistryFacet public erc6551RegistryFacet;
 
     // Initializers
     TesserInit public tesserInit;
@@ -78,6 +84,7 @@ contract SetUp is Test {
         ownershipFacet = OwnershipFacet(address(tesserProxy));
         vestingCoreFacet = VestingCoreFacet(address(tesserProxy));
         vestingMathFacet = VestingMathFacet(address(tesserProxy));
+        erc6551RegistryFacet = ERC6551RegistryFacet(address(tesserProxy));
 
         // Deploy Token
         tesserToken = new TesserToken(owner.addr);
@@ -94,9 +101,10 @@ contract SetUp is Test {
         DiamondLoupeFacet _diamondLoupeFacet = new DiamondLoupeFacet();
         VestingCoreFacet _vestingCoreFacet = new VestingCoreFacet();
         VestingMathFacet _vestingMathFacet = new VestingMathFacet();
+        ERC6551RegistryFacet _erc6551RegistryFacet = new ERC6551RegistryFacet();
 
         // Prepare diamond cut data
-        IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](3);
+        IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](4);
 
         // Diamond Loupe Facet
         bytes4[] memory diamondLoupeSelectors = new bytes4[](6);
@@ -138,14 +146,34 @@ contract SetUp is Test {
             functionSelectors: vestingMathSelectors
         });
 
+        // ERC6551 Registry Facet
+        bytes4[] memory erc6551RegistrySelectors = new bytes4[](2);
+        erc6551RegistrySelectors[0] = ERC6551RegistryFacet
+            .createAccount
+            .selector;
+        erc6551RegistrySelectors[1] = ERC6551RegistryFacet.account.selector;
+        facetCuts[3] = IDiamondCut.FacetCut({
+            facetAddress: address(_erc6551RegistryFacet),
+            action: IDiamondCut.FacetCutAction.Add,
+            functionSelectors: erc6551RegistrySelectors
+        });
+
         // Deploy Initializer
         tesserInit = new TesserInit();
+
+        // Deploy Implementation Contract
+        ERC6551Account implementation = new ERC6551Account();
 
         // Add Facet Cuts with Initializer
         cut.diamondCut(
             facetCuts,
             address(tesserInit),
-            abi.encodeWithSelector(TesserInit.init.selector, owner.addr, 500) // 5% protocol fee
+            abi.encodeWithSelector(
+                TesserInit.init.selector,
+                owner.addr,
+                500,
+                address(implementation)
+            ) // 5% protocol fee
         );
     }
 }

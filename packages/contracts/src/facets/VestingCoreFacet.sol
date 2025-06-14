@@ -51,6 +51,9 @@ contract VestingCoreFacet {
         require(vestingDuration > 0, "Zero duration");
         require(VestingStorageLib.isValidAlpha(alpha), "Invalid alpha");
 
+        // TODO: Step 1: Mint a fsNFT with beneficiary as owner
+        // TODO: Step 2: Deploy ERC6551Account with that token
+
         // Calculate and collect protocol fee
         uint256 feeAmount = (totalAmount * vs.protocolFeeBps) / 10000;
         uint256 netAmount = totalAmount - feeAmount;
@@ -80,9 +83,6 @@ contract VestingCoreFacet {
             released: 0,
             frozen: false
         });
-
-        // TODO: Mint NFT
-        // TODO: Deploy ERC6551Account
 
         emit ScheduleCreated(
             vestingId,

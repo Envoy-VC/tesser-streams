@@ -18,12 +18,6 @@ library TesserProxyLib {
     bytes32 constant DIAMOND_STORAGE_POSITION =
         keccak256("diamond.standard.diamond.storage");
 
-    /// Emitted when contract ownership is transferred
-    event OwnershipTransferred(
-        address indexed previousOwner,
-        address indexed newOwner
-    );
-
     /// Emitted when a diamond cut is performed
     event DiamondCut(
         IDiamondCut.FacetCut[] _diamondCut,
