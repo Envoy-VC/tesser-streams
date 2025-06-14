@@ -13,14 +13,22 @@ import {
 } from '@tesser-streams/ui/components/sidebar';
 import { cn } from '@tesser-streams/ui/lib/utils';
 import {
+  CalendarCogIcon,
   CalendarPlus2Icon,
   CirclePlusIcon,
+  LayoutDashboardIcon,
   PanelLeftIcon,
   SettingsIcon,
+  StoreIcon,
 } from 'lucide-react';
 import { TesserStreamsLogo } from '../logo';
 
 const navItems = [
+  {
+    title: 'Dashboard',
+    href: '/dashboard',
+    icon: LayoutDashboardIcon,
+  },
   {
     title: 'Create Schedule',
     href: '/dashboard/create',
@@ -29,7 +37,12 @@ const navItems = [
   {
     title: 'Manage Schedules',
     href: '/dashboard/manage',
-    icon: SettingsIcon,
+    icon: CalendarCogIcon,
+  },
+  {
+    title: 'Marketplace',
+    href: '/dashboard/market',
+    icon: StoreIcon,
   },
 ];
 
@@ -38,6 +51,11 @@ const nav2Items = [
     title: 'Mint Tesser',
     href: '/dashboard/mint',
     icon: CirclePlusIcon,
+  },
+  {
+    title: 'Settings',
+    href: '/dashboard/settings',
+    icon: SettingsIcon,
   },
 ];
 

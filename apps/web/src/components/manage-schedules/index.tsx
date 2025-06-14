@@ -4,6 +4,7 @@ import { timeBetween } from '@/lib/helpers';
 import { Link } from '@tanstack/react-router';
 import { Button } from '@tesser-streams/ui/components/button';
 import { useLiveQuery } from 'dexie-react-hooks';
+import PlaceholderImage from 'public/images/placeholder.png';
 import { formatEther } from 'viem';
 import { TesserStreamsLogo } from '../logo';
 
@@ -20,51 +21,64 @@ export const ManageSchedules = () => {
         </div>
       </div>
       <div className='my-6 flex flex-row flex-wrap items-center gap-3'>
-        {schedules?.map((schedule) => (
-          <div
-            key={schedule.vestingId}
-            className='flex w-full max-w-[16rem] flex-col rounded-xl border bg-[#101010]'
-          >
-            <div className='flex flex-col gap-1 rounded-t-xl border-b p-3'>
-              <div className='text-neutral-400 text-xs'>AMOUNT</div>
-              <div className='flex flex-row items-center gap-2'>
-                <div className='text-2xl'>
-                  {formatEther(schedule.totalAmount)}
-                </div>
-                <div className='flex size-6 items-center justify-center rounded-full bg-primary'>
-                  <TesserStreamsLogo
-                    fill='#fff'
-                    stroke='#fff'
-                    className='size-4'
-                  />
+        {schedules && schedules?.length > 0 ? (
+          schedules?.map((schedule) => (
+            <div
+              key={schedule.vestingId}
+              className='flex w-full max-w-[16rem] flex-col rounded-xl border bg-[#101010]'
+            >
+              <div className='flex flex-col gap-1 rounded-t-xl border-b p-3'>
+                <div className='text-neutral-400 text-xs'>AMOUNT</div>
+                <div className='flex flex-row items-center gap-2'>
+                  <div className='text-2xl'>
+                    {formatEther(schedule.totalAmount)}
+                  </div>
+                  <div className='flex size-6 items-center justify-center rounded-full bg-primary'>
+                    <TesserStreamsLogo
+                      fill='#fff'
+                      stroke='#fff'
+                      className='size-4'
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className='flex flex-row items-center justify-between p-3'>
-              <div className='text-neutral-300 text-xs'>
-                {timeBetween(
-                  schedule.startAt,
-                  Math.floor(Date.now() / 1000),
-                  true
-                  // biome-ignore lint/nursery/useConsistentCurlyBraces: <explanation>
-                )}{' '}
-                ago
-              </div>
-              <Button
-                asChild={true}
-                variant='outline'
-                className='brightness-125 hover:brightness-100'
-              >
-                <Link
-                  to='/dashboard/manage/$vestingId'
-                  params={{ vestingId: schedule.vestingId }}
+              <div className='flex flex-row items-center justify-between p-3'>
+                <div className='text-neutral-300 text-xs'>
+                  {timeBetween(
+                    schedule.startAt,
+                    Math.floor(Date.now() / 1000),
+                    true
+                    // biome-ignore lint/nursery/useConsistentCurlyBraces: <explanation>
+                  )}{' '}
+                  ago
+                </div>
+                <Button
+                  asChild={true}
+                  variant='outline'
+                  className='brightness-125 hover:brightness-100'
                 >
-                  Manage
-                </Link>
-              </Button>
+                  <Link
+                    to='/dashboard/manage/$vestingId'
+                    params={{ vestingId: schedule.vestingId }}
+                  >
+                    Manage
+                  </Link>
+                </Button>
+              </div>
             </div>
+          ))
+        ) : (
+          <div className='mx-auto flex flex-col items-center gap-3'>
+            <div className='text-neutral-300 text-sm'>Nothing to show here</div>
+            {/* biome-ignore lint/nursery/noImgElement: <explanation> */}
+            <img
+              width={128}
+              height={128}
+              src={PlaceholderImage}
+              alt='Empty State'
+            />
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
