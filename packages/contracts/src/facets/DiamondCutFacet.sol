@@ -2,6 +2,7 @@
 pragma solidity ^0.8.28;
 
 import {IDiamondCut} from "../interfaces/IDiamondCut.sol";
+import {OwnershipStorageLib} from "../libraries/OwnershipStorage.sol";
 import {TesserProxyLib} from "../libraries/TesserProxyLib.sol";
 
 /// @title DiamondCutFacet
@@ -16,8 +17,12 @@ contract DiamondCutFacet is IDiamondCut {
     /// @param _diamondCut Array of FacetCut structs containing the modifications to perform
     /// @param _init Address of the initialization contract (if any)
     /// @param _calldata Calldata to be passed to the initialization contract
-    function diamondCut(FacetCut[] calldata _diamondCut, address _init, bytes calldata _calldata) external override {
-        TesserProxyLib.enforceIsContractOwner();
+    function diamondCut(
+        FacetCut[] calldata _diamondCut,
+        address _init,
+        bytes calldata _calldata
+    ) external override {
+        OwnershipStorageLib.enforceContractOwner();
         TesserProxyLib.diamondCut(_diamondCut, _init, _calldata);
     }
 }

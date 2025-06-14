@@ -17,13 +17,16 @@ contract DiamondLoupeFacet is IDiamondLoupe, IERC165 {
     /// 3. Populates each Facet with its address and function selectors
     /// @return facets_ Array of Facet structs containing all facets and their function selectors
     function facets() public view override returns (Facet[] memory facets_) {
-        TesserProxyLib.DiamondStorage storage ds = TesserProxyLib.diamondStorage();
+        TesserProxyLib.DiamondStorage storage ds = TesserProxyLib
+            .diamondStorage();
         uint256 numFacets = ds.facetAddresses.length;
         facets_ = new Facet[](numFacets);
         for (uint256 i; i < numFacets; i++) {
             address facetAddress_ = ds.facetAddresses[i];
             facets_[i].facetAddress = facetAddress_;
-            facets_[i].functionSelectors = ds.facetFunctionSelectors[facetAddress_].functionSelectors;
+            facets_[i].functionSelectors = ds
+                .facetFunctionSelectors[facetAddress_]
+                .functionSelectors;
         }
     }
 
@@ -33,14 +36,14 @@ contract DiamondLoupeFacet is IDiamondLoupe, IERC165 {
     /// 2. Returns the array of function selectors for the specified facet
     /// @param _facet The address of the facet to query
     /// @return facetFunctionSelectors_ Array of function selectors implemented by the facet
-    function facetFunctionSelectors(address _facet)
-        public
-        view
-        override
-        returns (bytes4[] memory facetFunctionSelectors_)
-    {
-        TesserProxyLib.DiamondStorage storage ds = TesserProxyLib.diamondStorage();
-        facetFunctionSelectors_ = ds.facetFunctionSelectors[_facet].functionSelectors;
+    function facetFunctionSelectors(
+        address _facet
+    ) public view override returns (bytes4[] memory facetFunctionSelectors_) {
+        TesserProxyLib.DiamondStorage storage ds = TesserProxyLib
+            .diamondStorage();
+        facetFunctionSelectors_ = ds
+            .facetFunctionSelectors[_facet]
+            .functionSelectors;
     }
 
     /// @notice Gets all facet addresses used by the diamond proxy
@@ -48,8 +51,14 @@ contract DiamondLoupeFacet is IDiamondLoupe, IERC165 {
     /// 1. Retrieves the diamond storage
     /// 2. Returns the array of all facet addresses
     /// @return facetAddresses_ Array of all facet addresses in the diamond proxy
-    function facetAddresses() public view override returns (address[] memory facetAddresses_) {
-        TesserProxyLib.DiamondStorage storage ds = TesserProxyLib.diamondStorage();
+    function facetAddresses()
+        public
+        view
+        override
+        returns (address[] memory facetAddresses_)
+    {
+        TesserProxyLib.DiamondStorage storage ds = TesserProxyLib
+            .diamondStorage();
         facetAddresses_ = ds.facetAddresses;
     }
 
@@ -60,22 +69,25 @@ contract DiamondLoupeFacet is IDiamondLoupe, IERC165 {
     /// If no facet implements the selector, returns address(0)
     /// @param _functionSelector The function selector to query
     /// @return facetAddress_ The address of the facet that implements the function selector
-    function facetAddress(bytes4 _functionSelector) public view override returns (address facetAddress_) {
-        TesserProxyLib.DiamondStorage storage ds = TesserProxyLib.diamondStorage();
-        facetAddress_ = ds.selectorToFacetAndPosition[_functionSelector].facetAddress;
+    function facetAddress(
+        bytes4 _functionSelector
+    ) public view override returns (address facetAddress_) {
+        TesserProxyLib.DiamondStorage storage ds = TesserProxyLib
+            .diamondStorage();
+        facetAddress_ = ds
+            .selectorToFacetAndPosition[_functionSelector]
+            .facetAddress;
     }
 
     /// @notice Checks if the contract supports a specific interface
     /// @dev This function implements ERC-165 interface detection
     /// @param _interfaceId The interface identifier to check
     /// @return bool True if the interface is supported, false otherwise
-    function supportsInterface(bytes4 _interfaceId) public view override returns (bool) {
-        TesserProxyLib.DiamondStorage storage ds = TesserProxyLib.diamondStorage();
+    function supportsInterface(
+        bytes4 _interfaceId
+    ) public view override returns (bool) {
+        TesserProxyLib.DiamondStorage storage ds = TesserProxyLib
+            .diamondStorage();
         return ds.supportedInterfaces[_interfaceId];
-    }
-
-    function owner() public view returns (address) {
-        TesserProxyLib.DiamondStorage storage ds = TesserProxyLib.diamondStorage();
-        return ds.contractOwner;
     }
 }

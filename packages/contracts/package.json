@@ -16,6 +16,7 @@
   "description": "",
   "devDependencies": {
     "@nomicfoundation/hardhat-ethers": "^3.0.8",
+    "@nomicfoundation/hardhat-foundry": "^1.1.4",
     "@nomicfoundation/hardhat-ignition": "^0.15.11",
     "@nomicfoundation/hardhat-ignition-ethers": "^0.15.11",
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",

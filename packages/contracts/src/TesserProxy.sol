@@ -3,6 +3,10 @@ pragma solidity ^0.8.28;
 
 import {IDiamondCut} from "./interfaces/IDiamondCut.sol";
 import {TesserProxyLib} from "./libraries/TesserProxyLib.sol";
+import {OwnershipStorageLib} from "./libraries/OwnershipStorage.sol";
+
+// Facets
+import {OwnershipFacet} from "./facets/OwnershipFacet.sol";
 
 /// @title TesserProxy
 /// @notice Main proxy contract implementing the Diamond proxy pattern
@@ -16,11 +20,17 @@ contract TesserProxy {
     /// 2. Adding the diamondCut function from the diamondCutFacet
     /// @param _contractOwner The address that will be set as the contract owner
     /// @param _diamondCutFacet The address of the facet implementing the diamondCut function
-    constructor(address _contractOwner, address _diamondCutFacet) payable {
-        TesserProxyLib.setContractOwner(_contractOwner);
+    constructor(
+        address _contractOwner,
+        address _diamondCutFacet,
+        address _ownershipFacet
+    ) payable {
+        // Initialize ownership
+        OwnershipStorageLib.initOwnership(_contractOwner);
 
-        // Add the diamondCut external function from the diamondCutFacet
-        IDiamondCut.FacetCut[] memory cut = new IDiamondCut.FacetCut[](1);
+        // Add the diamondCut external function from the diamondCutFacet + ownershipFacet
+        IDiamondCut.FacetCut[] memory cut = new IDiamondCut.FacetCut[](2);
+
         bytes4[] memory functionSelectors = new bytes4[](1);
         functionSelectors[0] = IDiamondCut.diamondCut.selector;
         cut[0] = IDiamondCut.FacetCut({
@@ -28,6 +38,17 @@ contract TesserProxy {
             action: IDiamondCut.FacetCutAction.Add,
             functionSelectors: functionSelectors
         });
+
+        bytes4[] memory functionSelectors2 = new bytes4[](3);
+        functionSelectors2[0] = OwnershipFacet.owner.selector;
+        functionSelectors2[1] = OwnershipFacet.transferOwnership.selector;
+        functionSelectors2[2] = OwnershipFacet.acceptOwnership.selector;
+        cut[1] = IDiamondCut.FacetCut({
+            facetAddress: _ownershipFacet,
+            action: IDiamondCut.FacetCutAction.Add,
+            functionSelectors: functionSelectors2
+        });
+
         TesserProxyLib.diamondCut(cut, address(0), "");
     }
 
@@ -56,8 +77,12 @@ contract TesserProxy {
             returndatacopy(0, 0, returndatasize())
             // return any return value or error back to the caller
             switch result
-            case 0 { revert(0, returndatasize()) }
-            default { return(0, returndatasize()) }
+            case 0 {
+                revert(0, returndatasize())
+            }
+            default {
+                return(0, returndatasize())
+            }
         }
     }
 

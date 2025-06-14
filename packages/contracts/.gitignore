@@ -6,3 +6,4 @@ artifacts-pvm
 hardhat-cache
 artifacts
 ignition/deployments
+cache_hardhat-pvm

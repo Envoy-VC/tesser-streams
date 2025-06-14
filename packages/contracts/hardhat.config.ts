@@ -6,16 +6,14 @@ import '@nomicfoundation/hardhat-toolbox';
 import '@parity/hardhat-polkadot';
 import '@typechain/hardhat';
 import '@nomicfoundation/hardhat-chai-matchers';
+import '@nomicfoundation/hardhat-foundry';
 
 dotenvConfig();
 
 const config: HardhatUserConfig = {
   solidity: '0.8.28',
   paths: {
-    sources: './src',
     tests: './hardhat-tests',
-    artifacts: './artifacts',
-    cache: './hardhat-cache',
   },
   resolc: {
     version: '1.5.2',

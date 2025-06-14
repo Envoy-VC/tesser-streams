@@ -20,18 +20,17 @@ import {VestingStorageLib} from "../libraries/VestingStorage.sol";
 /// through the diamondCut function.
 contract TesserInit {
     /// @notice Initializes the diamond proxy with required interfaces and state variables
-    /// @param _initialOwner The initial owner of the diamond proxy
     /// @param _treasury The address of the treasury
     /// @param _protocolFeeBps The protocol fee in basis points
-    function init(address _initialOwner, address _treasury, uint16 _protocolFeeBps) public {
+    function init(address _treasury, uint16 _protocolFeeBps) public {
         // adding ERC165 data
-        TesserProxyLib.DiamondStorage storage ds = TesserProxyLib.diamondStorage();
+        TesserProxyLib.DiamondStorage storage ds = TesserProxyLib
+            .diamondStorage();
         ds.supportedInterfaces[type(IERC165).interfaceId] = true;
         ds.supportedInterfaces[type(IDiamondCut).interfaceId] = true;
         ds.supportedInterfaces[type(IDiamondLoupe).interfaceId] = true;
         ds.supportedInterfaces[type(IERC173).interfaceId] = true;
 
-        OwnershipStorageLib.initOwnership(_initialOwner);
         VestingStorageLib.initVesting(_treasury, _protocolFeeBps);
     }
 }

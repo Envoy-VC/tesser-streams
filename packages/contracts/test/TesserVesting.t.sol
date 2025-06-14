@@ -3,14 +3,14 @@ pragma solidity ^0.8.28;
 
 import {Test, console2 as console, Vm} from "forge-std/Test.sol";
 
-import {SetUp} from "test/base/SetUp.sol";
+import {SetUp} from "../test/base/SetUp.sol";
 
 // Libraries
-import {TesserProxyLib} from "src/libraries/TesserProxyLib.sol";
-import {VestingStorageLib} from "src/libraries/VestingStorage.sol";
+import {TesserProxyLib} from "../src/libraries/TesserProxyLib.sol";
+import {VestingStorageLib} from "../src/libraries/VestingStorage.sol";
 
 // Interfaces
-import {IDiamondLoupe} from "src/interfaces/IDiamondLoupe.sol";
+import {IDiamondLoupe} from "../src/interfaces/IDiamondLoupe.sol";
 
 contract TesserVestingTests is Test, SetUp {
     Vm.Wallet public alice;
@@ -22,7 +22,9 @@ contract TesserVestingTests is Test, SetUp {
         bob = vm.createWallet("bob");
     }
 
-    function getReleasableAmount(bytes32 vestingId) public view returns (uint256) {
+    function getReleasableAmount(
+        bytes32 vestingId
+    ) public view returns (uint256) {
         return vestingMathFacet.computeReleasableAmount(vestingId) / 1e18;
     }
 
@@ -47,7 +49,12 @@ contract TesserVestingTests is Test, SetUp {
         tesserToken.approve(address(vestingCoreFacet), totalAmount);
 
         bytes32 vestingId = vestingCoreFacet.createVestingSchedule(
-            bob.addr, address(tesserToken), totalAmount, cliffDuration, vestingDuration, alpha
+            bob.addr,
+            address(tesserToken),
+            totalAmount,
+            cliffDuration,
+            vestingDuration,
+            alpha
         );
 
         uint256 vestedAmount = getVestedAmount(vestingId);
@@ -63,7 +70,8 @@ contract TesserVestingTests is Test, SetUp {
         // After Half vesting duration, vested amount should be equal to (0.5)^alpha * totalAmount
         // that is (0.5)^0.5 * 950 = 671
         /// 950 because of 5% protocol fee
-        VestingStorageLib.VestingSchedule memory schedule = vestingCoreFacet.getVestingSchedule(vestingId);
+        VestingStorageLib.VestingSchedule memory schedule = vestingCoreFacet
+            .getVestingSchedule(vestingId);
         vm.warp(block.timestamp + vestingDuration / 2 + schedule.startTime);
         vestedAmount = getVestedAmount(vestingId);
         releasableAmount = getReleasableAmount(vestingId);

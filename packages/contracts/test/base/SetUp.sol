@@ -4,26 +4,26 @@ pragma solidity ^0.8.28;
 import {Test, console2 as console, Vm} from "forge-std/Test.sol";
 
 // Proxy
-import {TesserProxy} from "src/TesserProxy.sol";
+import {TesserProxy} from "../../src/TesserProxy.sol";
 
 // Facets
-import {DiamondCutFacet} from "src/facets/DiamondCutFacet.sol";
-import {DiamondLoupeFacet} from "src/facets/DiamondLoupeFacet.sol";
-import {OwnershipFacet} from "src/facets/OwnershipFacet.sol";
-import {VestingCoreFacet} from "src/facets/VestingCoreFacet.sol";
-import {VestingMathFacet} from "src/facets/VestingMathFacet.sol";
+import {DiamondCutFacet} from "../../src/facets/DiamondCutFacet.sol";
+import {DiamondLoupeFacet} from "../../src/facets/DiamondLoupeFacet.sol";
+import {OwnershipFacet} from "../../src/facets/OwnershipFacet.sol";
+import {VestingCoreFacet} from "../../src/facets/VestingCoreFacet.sol";
+import {VestingMathFacet} from "../../src/facets/VestingMathFacet.sol";
 
 // Token
-import {TesserToken} from "src/TesserToken.sol";
+import {TesserToken} from "../../src/TesserToken.sol";
 
 // Initializers
-import {TesserInit} from "src/initializers/TesserInitializer.sol";
+import {TesserInit} from "../../src/initializers/TesserInitializer.sol";
 
 // Libraries
-import {TesserProxyLib} from "src/libraries/TesserProxyLib.sol";
+import {TesserProxyLib} from "../../src/libraries/TesserProxyLib.sol";
 
 // Interfaces
-import {IDiamondCut} from "src/interfaces/IDiamondCut.sol";
+import {IDiamondCut} from "../../src/interfaces/IDiamondCut.sol";
 
 contract SetUp is Test {
     Vm.Wallet public owner;
@@ -59,9 +59,15 @@ contract SetUp is Test {
 
         // Deploy Diamond Cut Facet
         DiamondCutFacet _diamondCutFacet = new DiamondCutFacet();
+        // Deploy Ownership Facet
+        OwnershipFacet _ownershipFacet = new OwnershipFacet();
 
         // Deploy Proxy
-        tesserProxy = new TesserProxy(owner.addr, address(_diamondCutFacet));
+        tesserProxy = new TesserProxy(
+            owner.addr,
+            address(_diamondCutFacet),
+            address(_ownershipFacet)
+        );
 
         // Initialize Facets
         initializeFacets(address(tesserProxy));
@@ -86,17 +92,18 @@ contract SetUp is Test {
 
         // Deploy Facets
         DiamondLoupeFacet _diamondLoupeFacet = new DiamondLoupeFacet();
-        OwnershipFacet _ownershipFacet = new OwnershipFacet();
         VestingCoreFacet _vestingCoreFacet = new VestingCoreFacet();
         VestingMathFacet _vestingMathFacet = new VestingMathFacet();
 
         // Prepare diamond cut data
-        IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](4);
+        IDiamondCut.FacetCut[] memory facetCuts = new IDiamondCut.FacetCut[](3);
 
         // Diamond Loupe Facet
         bytes4[] memory diamondLoupeSelectors = new bytes4[](6);
         diamondLoupeSelectors[0] = DiamondLoupeFacet.facets.selector;
-        diamondLoupeSelectors[1] = DiamondLoupeFacet.facetFunctionSelectors.selector;
+        diamondLoupeSelectors[1] = DiamondLoupeFacet
+            .facetFunctionSelectors
+            .selector;
         diamondLoupeSelectors[2] = DiamondLoupeFacet.facetAddresses.selector;
         diamondLoupeSelectors[3] = DiamondLoupeFacet.facetAddress.selector;
         diamondLoupeSelectors[4] = DiamondLoupeFacet.supportsInterface.selector;
@@ -106,23 +113,14 @@ contract SetUp is Test {
             functionSelectors: diamondLoupeSelectors
         });
 
-        // OwnershipFacet
-        bytes4[] memory ownershipSelectors = new bytes4[](3);
-        ownershipSelectors[0] = OwnershipFacet.owner.selector;
-        ownershipSelectors[1] = OwnershipFacet.transferOwnership.selector;
-        ownershipSelectors[2] = OwnershipFacet.acceptOwnership.selector;
-        facetCuts[1] = IDiamondCut.FacetCut({
-            facetAddress: address(_ownershipFacet),
-            action: IDiamondCut.FacetCutAction.Add,
-            functionSelectors: ownershipSelectors
-        });
-
         // Vesting Core Facet
         bytes4[] memory vestingCoreSelectors = new bytes4[](3);
-        vestingCoreSelectors[0] = VestingCoreFacet.createVestingSchedule.selector;
+        vestingCoreSelectors[0] = VestingCoreFacet
+            .createVestingSchedule
+            .selector;
         vestingCoreSelectors[1] = VestingCoreFacet.release.selector;
         vestingCoreSelectors[2] = VestingCoreFacet.getVestingSchedule.selector;
-        facetCuts[2] = IDiamondCut.FacetCut({
+        facetCuts[1] = IDiamondCut.FacetCut({
             facetAddress: address(_vestingCoreFacet),
             action: IDiamondCut.FacetCutAction.Add,
             functionSelectors: vestingCoreSelectors
@@ -131,8 +129,10 @@ contract SetUp is Test {
         // Vesting Math Facet
         bytes4[] memory vestingMathSelectors = new bytes4[](2);
         vestingMathSelectors[0] = VestingMathFacet.computeVestedAmount.selector;
-        vestingMathSelectors[1] = VestingMathFacet.computeReleasableAmount.selector;
-        facetCuts[3] = IDiamondCut.FacetCut({
+        vestingMathSelectors[1] = VestingMathFacet
+            .computeReleasableAmount
+            .selector;
+        facetCuts[2] = IDiamondCut.FacetCut({
             facetAddress: address(_vestingMathFacet),
             action: IDiamondCut.FacetCutAction.Add,
             functionSelectors: vestingMathSelectors
@@ -145,7 +145,7 @@ contract SetUp is Test {
         cut.diamondCut(
             facetCuts,
             address(tesserInit),
-            abi.encodeWithSelector(TesserInit.init.selector, owner.addr, owner.addr, 500) // 5% protocol fee
+            abi.encodeWithSelector(TesserInit.init.selector, owner.addr, 500) // 5% protocol fee
         );
     }
 }
