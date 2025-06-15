@@ -1,6 +1,6 @@
 {
   "name": "@tesser-streams/sdk",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "SDK for the Tesser Streams Protocol",
   "keywords": [],
   "license": "MIT",
