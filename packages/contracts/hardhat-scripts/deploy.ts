@@ -1,7 +1,10 @@
 import hre from 'hardhat';
 import {
+  Account__factory,
   DiamondCutFacet__factory,
   DiamondLoupeFacet__factory,
+  ERC6551RegistryFacet__factory,
+  FractionalStreamNFT__factory,
   type IDiamondCut,
   OwnershipFacet__factory,
   TesserInit__factory,
@@ -30,10 +33,17 @@ async function main() {
   const diamondCutFacetAddress = await diamondCutFacet.getAddress();
   console.log('DiamondCutFacet deployed to:', diamondCutFacetAddress);
 
+  // Deploy OwnershipFacet
+  const ownershipFacet = await new OwnershipFacet__factory(deployer).deploy();
+  await ownershipFacet.waitForDeployment();
+  const ownershipFacetAddress = await ownershipFacet.getAddress();
+  console.log('OwnershipFacet deployed to:', ownershipFacetAddress);
+
   // Deploy TesserProxy
   const tesserProxy = await new TesserProxy__factory(deployer).deploy(
     deployer.address,
-    diamondCutFacetAddress
+    diamondCutFacetAddress,
+    ownershipFacetAddress
   );
   await tesserProxy.waitForDeployment();
   const tesserProxyAddress = await tesserProxy.getAddress();
@@ -46,12 +56,6 @@ async function main() {
   await diamondLoupeFacet.waitForDeployment();
   const diamondLoupeFacetAddress = await diamondLoupeFacet.getAddress();
   console.log('DiamondLoupeFacet deployed to:', diamondLoupeFacetAddress);
-
-  // Deploy OwnershipFacet
-  const ownershipFacet = await new OwnershipFacet__factory(deployer).deploy();
-  await ownershipFacet.waitForDeployment();
-  const ownershipFacetAddress = await ownershipFacet.getAddress();
-  console.log('OwnershipFacet deployed to:', ownershipFacetAddress);
 
   // Deploy VestingCoreFacet
   const vestingCoreFacet = await new VestingCoreFacet__factory(
@@ -69,6 +73,14 @@ async function main() {
   const vestingMathFacetAddress = await vestingMathFacet.getAddress();
   console.log('VestingMathFacet deployed to:', vestingMathFacetAddress);
 
+  // deploy ERC6551RegistryFacet
+  const erc6551RegistryFacet = await new ERC6551RegistryFacet__factory(
+    deployer
+  ).deploy();
+  await erc6551RegistryFacet.waitForDeployment();
+  const erc6551RegistryFacetAddress = await erc6551RegistryFacet.getAddress();
+  console.log('ERC6551RegistryFacet deployed to:', erc6551RegistryFacetAddress);
+
   // Deploy TesserToken
   const tesserToken = await new TesserToken__factory(deployer).deploy(
     deployer.address
@@ -77,12 +89,35 @@ async function main() {
   const tesserTokenAddress = await tesserToken.getAddress();
   console.log('TesserToken deployed to:', tesserTokenAddress);
 
-  console.log(diamondLoupeFacet.interface.getFunction('facets').selector);
+  // wait for 30 sec to avoid rate limit
+  console.log('Waiting for 30 sec to avoid rate limit');
+  await new Promise((resolve) => setTimeout(resolve, 10000));
+  console.log('Waiting for 20 sec to avoid rate limit');
+  await new Promise((resolve) => setTimeout(resolve, 10000));
+  console.log('Waiting for 10 sec to avoid rate limit');
+  await new Promise((resolve) => setTimeout(resolve, 10000));
+  console.log('Done waiting');
 
+  // Deploy TesserInit
   const tesserInit = await new TesserInit__factory(deployer).deploy();
   await tesserInit.waitForDeployment();
   const tesserInitAddress = await tesserInit.getAddress();
   console.log('TesserInit deployed to:', tesserInitAddress);
+
+  // Deploy Implementation Contract
+  const implementation = await new Account__factory(deployer).deploy();
+  await implementation.waitForDeployment();
+  const implementationAddress = await implementation.getAddress();
+  console.log('Implementation deployed to:', implementationAddress);
+
+  // Deploy FractionalStreamNFT
+  const fsNFT = await new FractionalStreamNFT__factory(deployer).deploy(
+    deployer.address,
+    tesserProxyAddress
+  );
+  await fsNFT.waitForDeployment();
+  const fsNFTAddress = await fsNFT.getAddress();
+  console.log('FractionalStreamNFT deployed to:', fsNFTAddress);
 
   const facetCuts: IDiamondCut.FacetCutStruct[] = [
     {
@@ -95,15 +130,6 @@ async function main() {
         diamondLoupeFacet.interface.getFunction('facetAddresses').selector,
         diamondLoupeFacet.interface.getFunction('facetAddress').selector,
         diamondLoupeFacet.interface.getFunction('supportsInterface').selector,
-      ],
-    },
-    {
-      facetAddress: ownershipFacetAddress,
-      action: FacetCutAction.Add,
-      functionSelectors: [
-        ownershipFacet.interface.getFunction('owner').selector,
-        ownershipFacet.interface.getFunction('transferOwnership').selector,
-        ownershipFacet.interface.getFunction('acceptOwnership').selector,
       ],
     },
     {
@@ -125,6 +151,14 @@ async function main() {
           .selector,
       ],
     },
+    {
+      facetAddress: erc6551RegistryFacetAddress,
+      action: FacetCutAction.Add,
+      functionSelectors: [
+        erc6551RegistryFacet.interface.getFunction('createAccount').selector,
+        erc6551RegistryFacet.interface.getFunction('account').selector,
+      ],
+    },
   ];
 
   const diamondCut = (
@@ -137,9 +171,26 @@ async function main() {
         type: 'function',
         name: 'init',
         inputs: [
-          { name: '_initialOwner', type: 'address', internalType: 'address' },
-          { name: '_treasury', type: 'address', internalType: 'address' },
-          { name: '_protocolFeeBps', type: 'uint16', internalType: 'uint16' },
+          {
+            internalType: 'address',
+            name: '_treasury',
+            type: 'address',
+          },
+          {
+            internalType: 'uint16',
+            name: '_protocolFeeBps',
+            type: 'uint16',
+          },
+          {
+            internalType: 'address',
+            name: '_initialImplementation',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: '_fractionalStreamNFT',
+            type: 'address',
+          },
         ],
         outputs: [],
         stateMutability: 'nonpayable',
@@ -148,8 +199,9 @@ async function main() {
     functionName: 'init',
     args: [
       deployer.address as `0x${string}`,
-      deployer.address as `0x${string}`,
-      500,
+      10,
+      implementationAddress as `0x${string}`,
+      fsNFTAddress as `0x${string}`,
     ],
   });
 

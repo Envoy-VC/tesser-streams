@@ -1,4 +1,5 @@
 import { vestingScheduleSchema } from '@/lib/zod';
+import { zid } from 'convex-helpers/server/zod';
 import { z } from 'zod';
 import { mutation, query } from './helpers';
 
@@ -19,6 +20,18 @@ export const getVestingSchedule = query({
       .query('schedules')
       .withIndex('by_vesting_id', (q) => q.eq('vestingId', args.vestingId))
       .first();
+    return res;
+  },
+});
+
+export const updateVestingSchedule = mutation({
+  args: {
+    updated: vestingScheduleSchema,
+    id: zid('schedules'),
+  },
+  handler: async (ctx, args) => {
+    const { id, updated } = args;
+    const res = await ctx.db.patch(id, updated);
     return res;
   },
 });

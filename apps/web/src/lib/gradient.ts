@@ -45,6 +45,8 @@ function murmurhash332Gc(key: string, seed = 0): number {
         ((k1 & 0xffff) * c2 + ((((k1 >>> 16) * c2) & 0xffff) << 16)) &
         0xffffffff;
       h1 ^= k1;
+    default:
+      break;
   }
 
   h1 ^= key.length;
