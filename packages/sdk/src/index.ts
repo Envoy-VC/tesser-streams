@@ -22,6 +22,10 @@ export class TesserStreamsClient<
     return await Actions.createVestingSchedule(this.config, params);
   }
 
+  async releaseSchedule(params: Types.ReleaseScheduleParams) {
+    return await Actions.releaseSchedule(this.config, params);
+  }
+
   async getVestingSchedule(params: Types.GetVestingScheduleParams) {
     return await Actions.getVestingSchedule(this.config, params);
   }

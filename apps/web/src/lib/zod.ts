@@ -3,7 +3,7 @@ import z from 'zod';
 export const vestingScheduleFields = {
   beneficiary: z.string().regex(/^0x[0-9a-fA-F]{40}$/), // Ethereum address
   tokenAddress: z.string().regex(/^0x[0-9a-fA-F]{40}$/),
-  vestingId: z.string().regex(/^0x[0-9a-fA-F]{40}$/),
+  vestingId: z.string().regex(/^0x[0-9a-fA-F]{66}$/),
   startTime: z.number(),
   cliffDuration: z.number(),
   vestingDuration: z.number(),
@@ -40,3 +40,14 @@ export const scheduleSalesFields = {
 export const scheduleSalesSchema = z.object(scheduleSalesFields);
 
 export type ScheduleSales = z.infer<typeof scheduleSalesSchema>;
+
+export const releasesFields = {
+  vestingId: z.string().regex(/^0x[0-9a-fA-F]{66}$/),
+  beneficiary: z.string().regex(/^0x[0-9a-fA-F]{40}$/),
+  amount: z.bigint(),
+  transactionHash: z.string(),
+};
+
+export const releaseSchema = z.object(releasesFields);
+
+export type Release = z.infer<typeof releaseSchema>;

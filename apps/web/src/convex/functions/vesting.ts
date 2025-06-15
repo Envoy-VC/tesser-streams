@@ -1,5 +1,4 @@
 import { vestingScheduleSchema } from '@/lib/zod';
-import { zid } from 'convex-helpers/server/zod';
 import { z } from 'zod';
 import { mutation, query } from './helpers';
 
@@ -27,11 +26,19 @@ export const getVestingSchedule = query({
 export const updateVestingSchedule = mutation({
   args: {
     updated: vestingScheduleSchema,
-    id: zid('schedules'),
   },
   handler: async (ctx, args) => {
-    const { id, updated } = args;
-    const res = await ctx.db.patch(id, updated);
+    const { updated } = args;
+    const schedule = await ctx.db
+      .query('schedules')
+      .withIndex('by_vesting_id', (q) =>
+        q.eq('vestingId', args.updated.vestingId)
+      )
+      .first();
+    if (!schedule) {
+      throw new Error('Schedule not found');
+    }
+    const res = await ctx.db.patch(schedule._id, updated);
     return res;
   },
 });
@@ -67,5 +74,17 @@ export const list = query({
   handler: async (ctx, args) => {
     const res = await ctx.db.query('schedules').take(30);
     return res;
+  },
+});
+
+export const releaseSchedule = mutation({
+  args: {
+    vestingId: z.string().regex(/^0x[0-9a-fA-F]{66}$/),
+    amount: z.bigint(),
+    beneficiary: z.string().regex(/^0x[0-9a-fA-F]{40}$/),
+    transactionHash: z.string(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.insert('releases', args);
   },
 });

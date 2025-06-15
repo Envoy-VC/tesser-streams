@@ -11,6 +11,7 @@ import {
 } from '@tesser-streams/ui/components/chart';
 import { useMemo } from 'react';
 
+import type { VestingSchedule } from '@/lib/zod';
 import dayjs from 'dayjs';
 
 export const description = 'A simple area chart';
@@ -23,19 +24,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 interface VestingChartProps {
-  schedule:
-    | {
-        beneficiary: `0x${string}`;
-        token: `0x${string}`;
-        startTime: number;
-        cliffDuration: number;
-        vestingDuration: number;
-        alpha: bigint;
-        totalAmount: bigint;
-        released: bigint;
-        frozen: boolean;
-      }
-    | undefined;
+  schedule: VestingSchedule | undefined;
 }
 
 export const VestingChart = ({ schedule }: VestingChartProps) => {

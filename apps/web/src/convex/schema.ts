@@ -1,4 +1,5 @@
 import {
+  releasesFields,
   scheduleListingFields,
   scheduleSalesFields,
   vestingScheduleFields,
@@ -20,6 +21,9 @@ const schema = defineSchema(
       .index('by_seller', ['seller'])
       .index('by_buyer', ['buyer'])
       .index('by_token_id', ['tokenId']),
+    releases: defineTable(zodToConvexFields(releasesFields))
+      .index('by_vesting_id', ['vestingId'])
+      .index('by_beneficiary', ['beneficiary']),
   },
   {
     strictTableNameTypes: true,

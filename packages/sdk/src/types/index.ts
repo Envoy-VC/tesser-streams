@@ -9,6 +9,10 @@ export type CreateVestingScheduleParams = {
   alpha: bigint;
 };
 
+export type ReleaseScheduleParams = {
+  vestingId: Hex;
+};
+
 export type GetVestingScheduleParams = {
   vestingId: Hex;
 };

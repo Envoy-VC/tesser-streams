@@ -1,9 +1,9 @@
 import NumberFlow from '@number-flow/react';
 
+import { api } from '@/convex/_generated/api';
 import { computeReleasable, getScheduleDetails } from '@/lib/helpers';
-import { Contracts } from '@/lib/wagmi';
+import { useQuery } from 'convex/react';
 import { useEffect, useMemo, useState } from 'react';
-import { useReadContract } from 'wagmi';
 import { TesserStreamsLogo } from '../logo';
 import { ReleaseScheduleButton } from './release';
 import { ReleasesTable } from './releases-table';
@@ -14,14 +14,12 @@ interface VestingDetailsProps {
 }
 
 export const VestingDetails = ({ vestingId }: VestingDetailsProps) => {
-  const { data: schedule } = useReadContract({
-    ...Contracts.vestingCore,
-    functionName: 'getVestingSchedule',
-    args: [vestingId as `0x${string}`],
+  const schedule = useQuery(api.functions.vesting.getVestingSchedule, {
+    vestingId,
   });
 
   const details = useMemo(() => {
-    return getScheduleDetails(schedule);
+    return getScheduleDetails(schedule ?? undefined);
   }, [schedule]);
 
   const [releasableAmount, setReleasableAmount] = useState(0);
@@ -29,7 +27,7 @@ export const VestingDetails = ({ vestingId }: VestingDetailsProps) => {
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const interval = setInterval(() => {
-      const release = computeReleasable(schedule);
+      const release = computeReleasable(schedule ?? undefined);
       console.log(release);
       setReleasableAmount(release);
     }, 1000);
@@ -94,7 +92,7 @@ export const VestingDetails = ({ vestingId }: VestingDetailsProps) => {
               </div>
             </div>
           </div>
-          <VestingChart schedule={schedule} />
+          <VestingChart schedule={schedule ?? undefined} />
         </div>
       </div>
       <ReleasesTable vestingId={vestingId} />

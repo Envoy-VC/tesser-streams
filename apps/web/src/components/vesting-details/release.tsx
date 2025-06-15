@@ -1,11 +1,11 @@
-import { db } from '@/db';
-import { Contracts, wagmiAdapter } from '@/lib/wagmi';
+import { api } from '@/convex/_generated/api';
+import { wagmiAdapter } from '@/lib/wagmi';
+import { TesserStreamsClient } from '@tesser-streams/sdk';
 import { Button } from '@tesser-streams/ui/components/button';
-import { waitForTransactionReceipt } from '@wagmi/core';
+import { useMutation } from 'convex/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { parseEventLogs } from 'viem';
-import { useAccount, useWriteContract } from 'wagmi';
+import { useAccount } from 'wagmi';
 
 interface ReleaseScheduleFormProps {
   vestingId: string;
@@ -15,8 +15,15 @@ export const ReleaseScheduleButton = ({
   vestingId,
 }: ReleaseScheduleFormProps) => {
   const [isReleasing, setIsReleasing] = useState(false);
-  const { writeContractAsync } = useWriteContract();
   const { address } = useAccount();
+
+  const updateScheduleMutation = useMutation(
+    api.functions.vesting.updateVestingSchedule
+  );
+
+  const releaseScheduleMutation = useMutation(
+    api.functions.vesting.releaseSchedule
+  );
 
   const onSubmit = async () => {
     try {
@@ -25,30 +32,20 @@ export const ReleaseScheduleButton = ({
         throw new Error('Connect your wallet');
       }
 
-      const hash = await writeContractAsync({
-        ...Contracts.vestingCore,
-        functionName: 'release',
-        args: [vestingId as `0x${string}`],
+      const tesser = new TesserStreamsClient(wagmiAdapter.wagmiConfig);
+      const { result, transactionHash } = await tesser.releaseSchedule({
+        vestingId: vestingId as `0x${string}`,
       });
-      const receipt = await waitForTransactionReceipt(
-        wagmiAdapter.wagmiConfig,
-        { hash }
-      );
-      const logs = parseEventLogs({
-        abi: Contracts.vestingCore.abi,
-        logs: receipt.logs,
+
+      // Update DB With new schedule
+      const newSchedule = await tesser.getVestingSchedule({
+        vestingId: result.vestingId as `0x${string}`,
       });
-      const log = logs.find((log) => log.eventName === 'TokensReleased');
-      const args = log?.args;
-      if (!log) {
-        throw new Error('Unable to get Vesting Schedule');
-      }
-      await db.releases.add({
-        vestingId: log.args.vestingId,
-        amount: log.args.amount,
-        timestamp: Math.floor(Date.now() / 1000),
-        transactionHash: hash,
-      });
+      await updateScheduleMutation({ updated: newSchedule });
+
+      // Update Release
+      await releaseScheduleMutation({ ...result, transactionHash });
+
       toast.success('Successfully released');
       setIsReleasing(false);
     } catch (error: unknown) {

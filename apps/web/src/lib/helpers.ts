@@ -1,4 +1,5 @@
 import { formatEther } from 'viem';
+import type { VestingSchedule } from './zod';
 
 export const getDuration = (
   duration: number,
@@ -72,19 +73,7 @@ export function timeBetween(
   return parts.length > 0 ? parts.slice(0, 3).join(', ') : '0 seconds';
 }
 
-interface Schedule {
-  beneficiary: `0x${string}`;
-  token: `0x${string}`;
-  startTime: number;
-  cliffDuration: number;
-  vestingDuration: number;
-  alpha: bigint;
-  totalAmount: bigint;
-  released: bigint;
-  frozen: boolean;
-}
-
-export const getScheduleDetails = (schedule: Schedule | undefined) => {
+export const getScheduleDetails = (schedule: VestingSchedule | undefined) => {
   if (!schedule) {
     return {
       cliffDuration: {
@@ -128,7 +117,7 @@ export const getScheduleDetails = (schedule: Schedule | undefined) => {
   };
 };
 
-export const computeVested = (schedule: Schedule) => {
+export const computeVested = (schedule: VestingSchedule) => {
   if (schedule.frozen) return Number(schedule.released);
   const timestamp = Math.floor(Date.now() / 1000);
   if (timestamp < schedule.startTime + schedule.cliffDuration) return 0;
@@ -145,7 +134,7 @@ export const computeVested = (schedule: Schedule) => {
   return Number(schedule.totalAmount) * ratioAlpha;
 };
 
-export const computeReleasable = (schedule: Schedule | undefined) => {
+export const computeReleasable = (schedule: VestingSchedule | undefined) => {
   if (!schedule) return 0;
   if (schedule.frozen) return 0;
   const vested = computeVested(schedule);
@@ -169,7 +158,7 @@ const getExpectedReleasableAtTime = (
   return (Number(totalAmount) * ratioAlpha) / 1e18;
 };
 
-export const computeChartData = (schedule: Schedule | undefined) => {
+export const computeChartData = (schedule: VestingSchedule | undefined) => {
   if (!schedule) return [];
   const chartData = [];
   const cliffEnd = schedule.startTime + schedule.cliffDuration;
