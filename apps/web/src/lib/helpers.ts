@@ -73,6 +73,49 @@ export function timeBetween(
   return parts.length > 0 ? parts.slice(0, 3).join(', ') : '0 seconds';
 }
 
+export function formatCurrency(
+  val: number,
+  currency = 'USD',
+  locale = 'en-US'
+): string {
+  let formattedNumber: string;
+  let suffix = '';
+  let value = val;
+
+  if (value >= 1_000_000_000) {
+    value /= 1_000_000_000;
+    suffix = 'B';
+  } else if (value >= 1_000_000) {
+    value /= 1_000_000;
+    suffix = 'M';
+  } else if (value >= 1_000) {
+    value /= 1_000;
+    suffix = 'K';
+  }
+
+  const formatter = new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency,
+    maximumFractionDigits: 2,
+  });
+
+  formattedNumber = formatter.format(value);
+
+  // Remove currency symbol from abbreviated values, to avoid things like "$1.2M"
+  // Optional: comment out this block if you want the currency symbol retained.
+  if (suffix) {
+    const parts = formatter.formatToParts(value);
+    const numberPart = parts.find(
+      (p) =>
+        p.type === 'integer' || p.type === 'decimal' || p.type === 'fraction'
+    );
+    const decimalPart = parts.map((p) => p.value).join('');
+    formattedNumber = decimalPart;
+  }
+
+  return `${formattedNumber}${suffix}`;
+}
+
 export const getScheduleDetails = (schedule: VestingSchedule | undefined) => {
   if (!schedule) {
     return {
