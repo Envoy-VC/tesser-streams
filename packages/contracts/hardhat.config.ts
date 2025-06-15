@@ -40,7 +40,7 @@ const config: HardhatUserConfig = {
     },
     polkadotHubTestnet: {
       polkavm: true,
-      url: 'https://testnet-passet-hub-eth-rpc.polkadot.io',
+      url: 'https://westend-asset-hub-eth-rpc.polkadot.io',
       accounts: [process.env.PRIVATE_KEY as string],
     },
   },

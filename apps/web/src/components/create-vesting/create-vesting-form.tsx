@@ -15,8 +15,8 @@ import {
 
 import { api } from '@/convex/_generated/api';
 import { getDuration } from '@/lib/helpers';
-import { Contracts, wagmiAdapter } from '@/lib/wagmi';
-import { TesserStreamsClient } from '@tesser-streams/sdk';
+import { wagmiAdapter } from '@/lib/wagmi';
+import { Contracts, TesserStreamsClient } from '@tesser-streams/sdk';
 import { Input } from '@tesser-streams/ui/components/input';
 import {
   Select,

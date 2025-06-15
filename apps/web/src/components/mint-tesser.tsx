@@ -5,7 +5,8 @@ import { CirclePlusIcon, Loader2Icon } from 'lucide-react';
 import { useAccount, useWriteContract } from 'wagmi';
 import { TesserStreamsLogo } from './logo';
 
-import { Contracts, wagmiAdapter } from '@/lib/wagmi';
+import { wagmiAdapter } from '@/lib/wagmi';
+import { Contracts } from '@tesser-streams/sdk';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { parseEther } from 'viem';

@@ -9,7 +9,7 @@ export const Hero = () => {
       <div className='absolute top-6 right-6 z-[100]'>
         <Button className='group h-7 w-[8rem] font-medium'>
           <Link
-            to='/dashboard/create'
+            to='/dashboard'
             className='flex w-full items-center gap-2'
           >
             Dashboard

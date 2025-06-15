@@ -1,4 +1,3 @@
-import { type ReleaseTransaction, db } from '@/db';
 import {
   type ColumnDef,
   type SortingState,
@@ -18,10 +17,12 @@ import {
   TableRow,
 } from '@tesser-streams/ui/components/table';
 import dayjs from 'dayjs';
-import { useLiveQuery } from 'dexie-react-hooks';
 import { ArrowUpDown } from 'lucide-react';
 import { useState } from 'react';
 
+import { api } from '@/convex/_generated/api';
+import type { Release } from '@/lib/zod';
+import { useQuery } from 'convex/react';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 import { TesserStreamsLogo } from '../logo';
 
@@ -32,7 +33,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
 }
 
-export const columns: ColumnDef<ReleaseTransaction>[] = [
+export const columns: ColumnDef<Release>[] = [
   {
     accessorKey: 'transactionHash',
     header: ({ column }) => {
@@ -74,7 +75,7 @@ export const columns: ColumnDef<ReleaseTransaction>[] = [
     },
   },
   {
-    accessorKey: 'timestamp',
+    accessorKey: '_creationTime',
     header: ({ column }) => {
       return (
         <Button
@@ -87,7 +88,7 @@ export const columns: ColumnDef<ReleaseTransaction>[] = [
       );
     },
     cell: ({ row }) => {
-      const timestamp = Number.parseInt(row.getValue('timestamp'));
+      const timestamp = Number.parseInt(row.getValue('_creationTime'));
       const date = new Date(timestamp * 1000);
       return (
         <div className='text-lg'>{dayjs(date).format('ddd Do MMM YYYY')}</div>
@@ -99,12 +100,12 @@ export const columns: ColumnDef<ReleaseTransaction>[] = [
 export const ReleasesTable = ({ vestingId }: { vestingId: string }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
 
-  const data = useLiveQuery(async () => {
-    return await db.releases.filter((x) => x.vestingId === vestingId).toArray();
+  const releases = useQuery(api.functions.vesting.getReleasesForVestingId, {
+    vestingId,
   });
 
   const table = useReactTable({
-    data: data ?? [],
+    data: releases ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,

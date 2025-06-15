@@ -12,7 +12,7 @@ export const createVestingSchedule = mutation({
 
 export const getVestingSchedule = query({
   args: {
-    vestingId: z.string().regex(/^0x[0-9a-fA-F]{40}$/),
+    vestingId: z.string().regex(/^0x[0-9a-fA-F]{66}$/),
   },
   handler: async (ctx, args) => {
     const res = await ctx.db
@@ -51,7 +51,7 @@ export const getVestingSchedulesForBeneficiary = query({
     const res = await ctx.db
       .query('schedules')
       .withIndex('by_beneficiary', (q) => q.eq('beneficiary', args.beneficiary))
-      .first();
+      .collect();
     return res;
   },
 });
@@ -86,5 +86,18 @@ export const releaseSchedule = mutation({
   },
   handler: async (ctx, args) => {
     await ctx.db.insert('releases', args);
+  },
+});
+
+export const getReleasesForVestingId = query({
+  args: {
+    vestingId: z.string().regex(/^0x[0-9a-fA-F]{66}$/),
+  },
+  handler: async (ctx, args) => {
+    const res = await ctx.db
+      .query('releases')
+      .withIndex('by_vesting_id', (q) => q.eq('vestingId', args.vestingId))
+      .collect();
+    return res;
   },
 });
