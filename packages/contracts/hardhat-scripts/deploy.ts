@@ -90,15 +90,6 @@ async function main() {
   const tesserTokenAddress = await tesserToken.getAddress();
   console.log('TesserToken deployed to:', tesserTokenAddress);
 
-  // // wait for 30 sec to avoid rate limit
-  // console.log('Waiting for 30 sec to avoid rate limit');
-  // await new Promise((resolve) => setTimeout(resolve, 10000));
-  // console.log('Waiting for 20 sec to avoid rate limit');
-  // await new Promise((resolve) => setTimeout(resolve, 10000));
-  // console.log('Waiting for 10 sec to avoid rate limit');
-  // await new Promise((resolve) => setTimeout(resolve, 10000));
-  // console.log('Done waiting');
-
   // Deploy TesserInit
   const tesserInit = await new TesserInit__factory(deployer).deploy();
   await tesserInit.waitForDeployment();
@@ -152,6 +143,8 @@ async function main() {
           .selector,
         vestingCoreFacet.interface.getFunction('release').selector,
         vestingCoreFacet.interface.getFunction('getVestingSchedule').selector,
+        vestingCoreFacet.interface.getFunction('getBeneficiaryForVestingId')
+          .selector,
       ],
     },
     {

@@ -30,7 +30,7 @@ function RouteComponent() {
           </div>
           <div className='flex h-full w-full flex-col gap-1 rounded-xl bg-[#0f0f0f] px-4 py-6'>
             <div className='text-3xl'>
-              {formatCurrency((Number(details?.totalVested) ?? 0) / 1e18)}
+              {formatCurrency(Number(details?.totalVested ?? 0) / 1e18)}
             </div>
             <div className='text-neutral-400 text-sm'>Amount Vested</div>
           </div>
