@@ -12,7 +12,7 @@ export const createVestingSchedule = mutation({
 
 export const getVestingSchedule = query({
   args: {
-    vestingId: z.string().regex(/^0x[0-9a-fA-F]{66}$/),
+    vestingId: z.string(),
   },
   handler: async (ctx, args) => {
     const res = await ctx.db
@@ -45,7 +45,7 @@ export const updateVestingSchedule = mutation({
 
 export const getVestingSchedulesForBeneficiary = query({
   args: {
-    beneficiary: z.string().regex(/^0x[0-9a-fA-F]{40}$/),
+    beneficiary: z.string(),
   },
   handler: async (ctx, args) => {
     const res = await ctx.db
@@ -58,7 +58,7 @@ export const getVestingSchedulesForBeneficiary = query({
 
 export const getVestingSchedulesForTokenId = query({
   args: {
-    tokenId: z.bigint(),
+    tokenId: z.string(),
   },
   handler: async (ctx, args) => {
     const res = await ctx.db
@@ -79,9 +79,9 @@ export const list = query({
 
 export const releaseSchedule = mutation({
   args: {
-    vestingId: z.string().regex(/^0x[0-9a-fA-F]{66}$/),
-    amount: z.bigint(),
-    beneficiary: z.string().regex(/^0x[0-9a-fA-F]{40}$/),
+    vestingId: z.string(),
+    amount: z.string(),
+    beneficiary: z.string(),
     transactionHash: z.string(),
   },
   handler: async (ctx, args) => {
@@ -91,7 +91,7 @@ export const releaseSchedule = mutation({
 
 export const getReleasesForVestingId = query({
   args: {
-    vestingId: z.string().regex(/^0x[0-9a-fA-F]{66}$/),
+    vestingId: z.string(),
   },
   handler: async (ctx, args) => {
     const res = await ctx.db

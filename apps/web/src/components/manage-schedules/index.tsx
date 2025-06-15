@@ -34,7 +34,7 @@ export const ManageSchedules = () => {
                 <div className='text-neutral-400 text-xs'>AMOUNT</div>
                 <div className='flex flex-row items-center gap-2'>
                   <div className='text-2xl'>
-                    {formatEther(schedule.totalAmount)}
+                    {formatEther(BigInt(schedule.totalAmount))}
                   </div>
                   <div className='flex size-6 items-center justify-center rounded-full bg-primary'>
                     <TesserStreamsLogo

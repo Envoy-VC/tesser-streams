@@ -73,11 +73,7 @@ export function timeBetween(
   return parts.length > 0 ? parts.slice(0, 3).join(', ') : '0 seconds';
 }
 
-export function formatCurrency(
-  val: number,
-  currency = 'USD',
-  locale = 'en-US'
-): string {
+export function formatCurrency(val: number, locale = 'en-US'): string {
   let formattedNumber: string;
   let suffix = '';
   let value = val;
@@ -94,8 +90,7 @@ export function formatCurrency(
   }
 
   const formatter = new Intl.NumberFormat(locale, {
-    style: 'currency',
-    currency,
+    style: 'decimal',
     maximumFractionDigits: 2,
   });
 
@@ -151,7 +146,7 @@ export const getScheduleDetails = (schedule: VestingSchedule | undefined) => {
     },
     totalAmount: {
       value: schedule.totalAmount,
-      formatted: formatEther(schedule.totalAmount),
+      formatted: formatEther(BigInt(schedule.totalAmount)),
     },
     vestingEndsIn: timeBetween(
       startTime + vestingDuration + cliffDuration,
@@ -182,7 +177,9 @@ export const computeReleasable = (schedule: VestingSchedule | undefined) => {
   if (schedule.frozen) return 0;
   const vested = computeVested(schedule);
   const releasable =
-    vested > schedule.released ? vested - Number(schedule.released) : 0n;
+    vested > BigInt(schedule.released)
+      ? vested - Number(schedule.released)
+      : 0n;
   return Number(formatEther(BigInt(releasable)));
 };
 
@@ -209,8 +206,8 @@ export const computeChartData = (schedule: VestingSchedule | undefined) => {
     timestamp: schedule.startTime,
     releasableAmount: getExpectedReleasableAtTime(
       schedule.startTime,
-      schedule.totalAmount,
-      schedule.alpha,
+      BigInt(schedule.totalAmount),
+      BigInt(schedule.alpha),
       schedule.startTime,
       schedule.cliffDuration,
       schedule.vestingDuration
@@ -220,8 +217,8 @@ export const computeChartData = (schedule: VestingSchedule | undefined) => {
     timestamp: cliffEnd,
     releasableAmount: getExpectedReleasableAtTime(
       cliffEnd,
-      schedule.totalAmount,
-      schedule.alpha,
+      BigInt(schedule.totalAmount),
+      BigInt(schedule.alpha),
       schedule.startTime,
       schedule.cliffDuration,
       schedule.vestingDuration
@@ -234,8 +231,8 @@ export const computeChartData = (schedule: VestingSchedule | undefined) => {
       timestamp,
       releasableAmount: getExpectedReleasableAtTime(
         timestamp,
-        schedule.totalAmount,
-        schedule.alpha,
+        BigInt(schedule.totalAmount),
+        BigInt(schedule.alpha),
         schedule.startTime,
         schedule.cliffDuration,
         schedule.vestingDuration

@@ -89,7 +89,7 @@ export const columns: ColumnDef<Release>[] = [
     },
     cell: ({ row }) => {
       const timestamp = Number.parseInt(row.getValue('_creationTime'));
-      const date = new Date(timestamp * 1000);
+      const date = new Date(timestamp);
       return (
         <div className='text-lg'>{dayjs(date).format('ddd Do MMM YYYY')}</div>
       );

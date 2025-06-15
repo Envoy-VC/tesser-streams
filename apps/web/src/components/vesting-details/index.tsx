@@ -2,6 +2,7 @@ import NumberFlow from '@number-flow/react';
 
 import { api } from '@/convex/_generated/api';
 import { computeReleasable, getScheduleDetails } from '@/lib/helpers';
+import type { VestingSchedule } from '@/lib/zod';
 import { useQuery } from 'convex/react';
 import { useEffect, useMemo, useState } from 'react';
 import { TesserStreamsLogo } from '../logo';
@@ -13,11 +14,9 @@ interface VestingDetailsProps {
   vestingId: string;
 }
 
-export const VestingDetails = ({ vestingId }: VestingDetailsProps) => {
-  const schedule = useQuery(api.functions.vesting.getVestingSchedule, {
-    vestingId,
-  });
-
+export const VestingDetailsContainer = ({
+  schedule,
+}: { schedule: VestingSchedule }) => {
   const details = useMemo(() => {
     return getScheduleDetails(schedule ?? undefined);
   }, [schedule]);
@@ -59,7 +58,7 @@ export const VestingDetails = ({ vestingId }: VestingDetailsProps) => {
                 />
               </div>
               <div className='flex justify-end'>
-                <ReleaseScheduleButton vestingId={vestingId} />
+                <ReleaseScheduleButton vestingId={schedule.vestingId} />
               </div>
             </div>
             <div className='flex h-48 items-center justify-center rounded-b-xl border-r border-b border-l bg-black bg-gradient-to-r from-[rgba(19,17,36,.5)] via-black to-[rgba(19,17,36,.5)] text-center text-[rgb(100,74,238)] text-xl'>
@@ -95,7 +94,17 @@ export const VestingDetails = ({ vestingId }: VestingDetailsProps) => {
           <VestingChart schedule={schedule ?? undefined} />
         </div>
       </div>
-      <ReleasesTable vestingId={vestingId} />
+      <ReleasesTable vestingId={schedule.vestingId} />
     </div>
   );
+};
+
+export const VestingDetails = ({ vestingId }: VestingDetailsProps) => {
+  const schedule = useQuery(api.functions.vesting.getVestingSchedule, {
+    vestingId,
+  });
+
+  if (!schedule) return null;
+
+  return <VestingDetailsContainer schedule={schedule} />;
 };

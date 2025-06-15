@@ -12,7 +12,7 @@ export const createMarketplaceListing = mutation({
 
 export const removeMarketplaceListing = mutation({
   args: {
-    tokenId: z.bigint(),
+    tokenId: z.string(),
   },
   handler: async (ctx, args) => {
     // Check if listing exists
@@ -40,8 +40,8 @@ export const list = query({
 
 export const buyMarketplaceListing = mutation({
   args: {
-    tokenId: z.bigint(),
-    buyer: z.string().regex(/^0x[0-9a-fA-F]{40}$/),
+    tokenId: z.string(),
+    buyer: z.string(),
   },
   handler: async (ctx, args) => {
     // Check if listing exists

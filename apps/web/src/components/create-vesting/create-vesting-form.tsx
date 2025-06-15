@@ -126,11 +126,13 @@ export const CreateVestingForm = () => {
       const tesser = new TesserStreamsClient(wagmiAdapter.wagmiConfig);
       const allowance = await tesser.getTokenAllowance({
         owner: address,
-        spender: Contracts.token.address,
+        spender: Contracts.tesserProxy.address,
       });
 
-      const needsApproval = allowance < value;
+      console.log(allowance);
 
+      const needsApproval = allowance < value;
+      console.log('Needs Approval', needsApproval);
       if (needsApproval) {
         await tesser.approveToken({
           spender: Contracts.tesserProxy.address,
@@ -147,7 +149,13 @@ export const CreateVestingForm = () => {
         alpha: parseEther(values.alpha.toString()),
       });
 
-      await createScheduleMutation(result);
+      await createScheduleMutation({
+        ...result,
+        totalAmount: result.totalAmount.toString(),
+        alpha: result.alpha.toString(),
+        released: result.released.toString(),
+        tokenId: result.tokenId.toString(),
+      });
 
       toast.success('Successfully created vesting schedule');
       form.reset({

@@ -41,10 +41,22 @@ export const ReleaseScheduleButton = ({
       const newSchedule = await tesser.getVestingSchedule({
         vestingId: result.vestingId as `0x${string}`,
       });
-      await updateScheduleMutation({ updated: newSchedule });
+      await updateScheduleMutation({
+        updated: {
+          ...newSchedule,
+          totalAmount: newSchedule.totalAmount.toString(),
+          alpha: newSchedule.alpha.toString(),
+          released: newSchedule.released.toString(),
+          tokenId: newSchedule.tokenId.toString(),
+        },
+      });
 
       // Update Release
-      await releaseScheduleMutation({ ...result, transactionHash });
+      await releaseScheduleMutation({
+        ...result,
+        transactionHash,
+        amount: result.amount.toString(),
+      });
 
       toast.success('Successfully released');
       setIsReleasing(false);

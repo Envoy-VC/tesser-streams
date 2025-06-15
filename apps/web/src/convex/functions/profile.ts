@@ -4,7 +4,7 @@ import { query } from './helpers';
 
 export const getProfileStatistics = query({
   args: {
-    address: z.string().regex(/^0x[0-9a-fA-F]{40}$/),
+    address: z.string(),
   },
   handler: async (ctx, args) => {
     // Collect all vesting schedules for the given address
@@ -12,6 +12,7 @@ export const getProfileStatistics = query({
       .query('schedules')
       .withIndex('by_beneficiary', (q) => q.eq('beneficiary', args.address))
       .collect();
+    const totalCreatedSchedules = schedules.length;
 
     // Collect all sales with either as buyer or seller
     const sales = await filter(
@@ -19,14 +20,27 @@ export const getProfileStatistics = query({
       (s) => s.buyer === args.address || s.seller === args.address
     ).collect();
 
-    const totalVested = schedules.reduce((acc, s) => acc + s.totalAmount, 0n);
+    const totalVested = schedules.reduce(
+      (acc, s) => acc + Number(s.totalAmount),
+      0
+    );
     const totalTradedSchedules = sales.length;
-    const totalTradedVolume = sales.reduce((acc, s) => acc + s.price, 0n);
+    const totalTradedVolume = sales.reduce(
+      (acc, s) => acc + Number(s.price),
+      0
+    );
+
+    const totalReleasedAmount = schedules.reduce(
+      (acc, s) => acc + Number(s.released),
+      0
+    );
 
     return {
       totalVested,
+      totalCreatedSchedules,
       totalTradedSchedules,
       totalTradedVolume,
+      totalReleasedAmount,
     };
   },
 });

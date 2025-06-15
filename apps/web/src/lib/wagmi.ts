@@ -4,6 +4,7 @@ import { http, createConfig } from 'wagmi';
 
 import { env } from '@/env';
 import { createPublicClient, defineChain } from 'viem';
+import { sepolia } from 'viem/chains';
 const assetHub = defineChain({
   id: 420420421,
   name: 'polkadot-hub-testnet',
@@ -21,14 +22,14 @@ const assetHub = defineChain({
 });
 
 export const publicClient = createPublicClient({
-  chain: assetHub,
+  chain: sepolia,
   transport: http(),
 });
 
 const config = createConfig({
-  chains: [assetHub],
+  chains: [sepolia],
   transports: {
-    [assetHub.id]: http(),
+    [sepolia.id]: http(),
   },
 });
 
@@ -47,7 +48,7 @@ const metadata = {
   icons: ['https://avatars.githubusercontent.com/u/179229932'],
 };
 
-const networks = [assetHub];
+const networks = [sepolia];
 
 export const wagmiAdapter = new WagmiAdapter({
   networks,
