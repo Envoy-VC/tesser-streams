@@ -90,6 +90,11 @@ contract NFTMarketplace is Ownable, ReentrancyGuard, ERC721Holder {
             IERC721(nftContract).ownerOf(tokenId) == listing.seller,
             "Seller no longer owns NFT"
         );
+        bool hasNFTApproval = IERC721(nftContract).isApprovedForAll(
+            msg.sender,
+            address(this)
+        );
+        require(hasNFTApproval, "Marketplace not approved");
         require(
             paymentToken.balanceOf(msg.sender) >= listing.price,
             "Insufficient balance"

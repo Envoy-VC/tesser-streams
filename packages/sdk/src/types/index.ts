@@ -22,3 +22,16 @@ export type GetAllowanceParams = {
   owner: Address;
   spender: Address;
 };
+
+export type ListScheduleParams = {
+  tokenId: bigint;
+  value: bigint;
+};
+
+export type BuyScheduleParams = {
+  tokenId: bigint;
+};
+
+export type RemoveScheduleListingParams = {
+  tokenId: bigint;
+};

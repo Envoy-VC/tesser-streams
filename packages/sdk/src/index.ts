@@ -33,6 +33,18 @@ export class TesserStreamsClient<
   async getTokenAllowance(params: Types.GetAllowanceParams) {
     return await Actions.getTokenAllowance(this.config, params);
   }
+
+  async listSchedule(params: Types.ListScheduleParams) {
+    return await Actions.listSchedule(this.config, params);
+  }
+
+  async buySchedule(params: Types.BuyScheduleParams) {
+    return await Actions.buySchedule(this.config, params);
+  }
+
+  async removeScheduleListing(params: Types.RemoveScheduleListingParams) {
+    return await Actions.removeScheduleListing(this.config, params);
+  }
 }
 
 export * from './data';
