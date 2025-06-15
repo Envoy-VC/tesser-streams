@@ -51,3 +51,5 @@ export * from './data';
 export * from './types';
 // biome-ignore lint/style/useNamingConvention: safe
 export * as Abi from './abi';
+// biome-ignore lint/style/useNamingConvention: safe
+export * as Zod from './zod';

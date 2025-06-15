@@ -6,6 +6,8 @@ import {
 import { parseEventLogs } from 'viem';
 import { Contracts } from '~/data';
 import type { CreateVestingScheduleParams } from '~/types';
+import type { VestingSchedule } from '~/zod';
+import { getVestingSchedule } from './get-schedule';
 
 export const createVestingSchedule = async (
   wagmiConfig: Config,
@@ -45,5 +47,13 @@ export const createVestingSchedule = async (
     throw new Error('Unable to get Vesting Schedule');
   }
 
-  return { transactionHash: hash, result, receipt };
+  const schedule = await getVestingSchedule(wagmiConfig, {
+    vestingId: result.vestingId,
+  });
+
+  return {
+    transactionHash: hash,
+    result: { ...schedule, vestingId: result.vestingId } as VestingSchedule,
+    receipt,
+  };
 };

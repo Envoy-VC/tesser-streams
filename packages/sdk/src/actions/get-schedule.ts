@@ -2,11 +2,12 @@ import { type Config, readContract } from '@wagmi/core';
 import { Contracts } from '~/data';
 
 import type { GetVestingScheduleParams } from '~/types';
+import type { VestingSchedule } from '~/zod';
 
 export const getVestingSchedule = async (
   wagmiConfig: Config,
   params: GetVestingScheduleParams
-) => {
+): Promise<VestingSchedule> => {
   const res = await readContract(wagmiConfig, {
     abi: Contracts.vestingCore.abi,
     functionName: 'getVestingSchedule',
@@ -21,5 +22,5 @@ export const getVestingSchedule = async (
     args: [params.vestingId],
   });
 
-  return { ...res, beneficiary };
+  return { ...res, beneficiary, vestingId: params.vestingId };
 };

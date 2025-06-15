@@ -6,6 +6,7 @@ import {
 import { parseEventLogs } from 'viem';
 import { Contracts } from '~/data';
 import type { ListScheduleParams } from '~/types';
+import type { ScheduleListing } from '~/zod';
 
 export const listSchedule = async (
   wagmiConfig: Config,
@@ -31,5 +32,5 @@ export const listSchedule = async (
     throw new Error('Unable to get Vesting Schedule');
   }
 
-  return { transactionHash: hash, result, receipt };
+  return { transactionHash: hash, result: result as ScheduleListing, receipt };
 };
