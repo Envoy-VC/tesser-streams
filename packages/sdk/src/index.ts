@@ -30,7 +30,7 @@ export class TesserStreamsClient<
     return await Actions.approveToken(this.config, params);
   }
 
-  async getTokenAllowance(params: Types.GetAllowanceParams) {
+  async getTokenAllowance(params: Types.GetAllowanceParams): Promise<bigint> {
     return await Actions.getTokenAllowance(this.config, params);
   }
 

@@ -65,6 +65,19 @@ export const buyMarketplaceListing = mutation({
       tokenId: listing.tokenId,
       price: listing.price,
     };
+
+    // Update beneficiary in vesting schedule
+    const vestingSchedule = await ctx.db
+      .query('schedules')
+      .withIndex('by_token_id', (q) => q.eq('tokenId', listing.tokenId))
+      .first();
+
+    if (vestingSchedule) {
+      await ctx.db.patch(vestingSchedule._id, {
+        beneficiary: args.buyer,
+      });
+    }
+
     const id = await ctx.db.insert('sales', sale);
     return { _id: id, ...sale };
   },

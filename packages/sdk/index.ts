@@ -20,3 +20,12 @@ const { result } = await client.createVestingSchedule({
   vestingDuration: 365,
   alpha: BigInt(0.5 * 10 ** 18),
 });
+
+const all = await client.getTokenAllowance({
+  beneficiary: '0x...',
+  tokenAddress: '0x...',
+  totalAmount: 1000n,
+  cliffDuration: 30,
+  vestingDuration: 365,
+  alpha: BigInt(0.5 * 10 ** 18),
+});

@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-contract NFTMarketplace is Ownable, ReentrancyGuard, ERC721Holder {
+contract Marketplace is Ownable, ReentrancyGuard, ERC721Holder {
     IERC20 public paymentToken;
     uint256 public feePercentage; // Basis points (e.g., 250 = 2.5%)
     address public feeRecipient;

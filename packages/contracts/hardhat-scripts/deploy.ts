@@ -6,6 +6,7 @@ import {
   ERC6551RegistryFacet__factory,
   FractionalStreamNFT__factory,
   type IDiamondCut,
+  Marketplace__factory,
   OwnershipFacet__factory,
   TesserInit__factory,
   TesserProxy__factory,
@@ -89,14 +90,14 @@ async function main() {
   const tesserTokenAddress = await tesserToken.getAddress();
   console.log('TesserToken deployed to:', tesserTokenAddress);
 
-  // wait for 30 sec to avoid rate limit
-  console.log('Waiting for 30 sec to avoid rate limit');
-  await new Promise((resolve) => setTimeout(resolve, 10000));
-  console.log('Waiting for 20 sec to avoid rate limit');
-  await new Promise((resolve) => setTimeout(resolve, 10000));
-  console.log('Waiting for 10 sec to avoid rate limit');
-  await new Promise((resolve) => setTimeout(resolve, 10000));
-  console.log('Done waiting');
+  // // wait for 30 sec to avoid rate limit
+  // console.log('Waiting for 30 sec to avoid rate limit');
+  // await new Promise((resolve) => setTimeout(resolve, 10000));
+  // console.log('Waiting for 20 sec to avoid rate limit');
+  // await new Promise((resolve) => setTimeout(resolve, 10000));
+  // console.log('Waiting for 10 sec to avoid rate limit');
+  // await new Promise((resolve) => setTimeout(resolve, 10000));
+  // console.log('Done waiting');
 
   // Deploy TesserInit
   const tesserInit = await new TesserInit__factory(deployer).deploy();
@@ -118,6 +119,17 @@ async function main() {
   await fsNFT.waitForDeployment();
   const fsNFTAddress = await fsNFT.getAddress();
   console.log('FractionalStreamNFT deployed to:', fsNFTAddress);
+
+  // Deploy Marketplace
+  const marketplace = await new Marketplace__factory(deployer).deploy(
+    fsNFTAddress,
+    tesserProxyAddress,
+    0,
+    deployer.address
+  );
+  await marketplace.waitForDeployment();
+  const marketplaceAddress = await marketplace.getAddress();
+  console.log('Marketplace deployed to:', marketplaceAddress);
 
   const facetCuts: IDiamondCut.FacetCutStruct[] = [
     {
