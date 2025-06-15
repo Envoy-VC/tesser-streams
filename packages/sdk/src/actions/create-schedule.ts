@@ -41,7 +41,7 @@ export const createVestingSchedule = async (
   });
   const log = logs.find((log) => log.eventName === 'ScheduleCreated');
   const result = log?.args;
-  if (!log) {
+  if (!result) {
     throw new Error('Unable to get Vesting Schedule');
   }
 

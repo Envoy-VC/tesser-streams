@@ -18,10 +18,24 @@ export class TesserStreamsClient<
     this.config = config;
   }
 
-  async createVestingSchedule(
-    params: Types.CreateVestingScheduleParams,
-    options?: Types.WriteTransactionOptions
-  ) {
-    return await Actions.createVestingSchedule(this.config, params, options);
+  async createVestingSchedule(params: Types.CreateVestingScheduleParams) {
+    return await Actions.createVestingSchedule(this.config, params);
+  }
+
+  async getVestingSchedule(params: Types.GetVestingScheduleParams) {
+    return await Actions.getVestingSchedule(this.config, params);
+  }
+
+  async approveToken(params: Types.ApproveTokenParams) {
+    return await Actions.approveToken(this.config, params);
+  }
+
+  async getTokenAllowance(params: Types.GetAllowanceParams) {
+    return await Actions.getTokenAllowance(this.config, params);
   }
 }
+
+export * from './data';
+export * from './types';
+// biome-ignore lint/style/useNamingConvention: safe
+export * as Abi from './abi';

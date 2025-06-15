@@ -12,3 +12,13 @@ export type CreateVestingScheduleParams = {
 export type GetVestingScheduleParams = {
   vestingId: Hex;
 };
+
+export type ApproveTokenParams = {
+  spender: Address;
+  value: bigint;
+};
+
+export type GetAllowanceParams = {
+  owner: Address;
+  spender: Address;
+};
