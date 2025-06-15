@@ -8,6 +8,7 @@ export const env = createEnv({
   clientPrefix: 'VITE_',
   client: {
     VITE_REOWN_PROJECT_ID: z.string(),
+    VITE_CONVEX_URL: z.string(),
   },
   runtimeEnv: import.meta.env,
   emptyStringAsUndefined: true,
