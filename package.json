@@ -9,8 +9,7 @@
     "format": "pnpm biome format",
     "format:write": "pnpm biome format --write",
     "prepare": "lefthook install",
-    "release": "pnpm run build && changeset publish",
-    "re": "pnpm run build --filter @tesser-streams/sdk && changeset publish",
+    "release": "pnpm run build --filter @tesser-streams/sdk && changeset publish",
     "changeset": "changeset"
   },
   "devDependencies": {
