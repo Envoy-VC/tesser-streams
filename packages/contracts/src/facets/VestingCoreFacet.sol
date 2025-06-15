@@ -61,7 +61,6 @@ contract VestingCoreFacet {
 
         IERC20 token = IERC20(tokenAddress);
 
-        // TODO: Step 1: Mint a fsNFT with beneficiary as owner
         FractionalStreamNFT fsNFT = FractionalStreamNFT(vs.fractionalStreamNFT);
         uint256 tokenId = fsNFT.safeMint(beneficiary);
 
@@ -88,10 +87,12 @@ contract VestingCoreFacet {
             token.safeTransfer(vs.treasury, feeAmount);
         }
 
+        address tkAddr = tokenAddress;
+
         // Generate unique vesting ID
         vestingId = keccak256(
             abi.encode(
-                tokenAddress,
+                tkAddr,
                 totalAmount,
                 cliffDuration,
                 vestingDuration,
@@ -103,7 +104,7 @@ contract VestingCoreFacet {
         vs.vestingNonce++;
 
         vs.vestingSchedules[vestingId] = VestingStorageLib.VestingSchedule({
-            tokenAddress: tokenAddress,
+            tokenAddress: tkAddr,
             startTime: uint40(block.timestamp),
             cliffDuration: cliffDuration,
             vestingDuration: vestingDuration,
@@ -118,7 +119,7 @@ contract VestingCoreFacet {
         emit ScheduleCreated(
             vestingId,
             beneficiary,
-            tokenAddress,
+            tkAddr,
             netAmount,
             feeAmount,
             accountAddress,

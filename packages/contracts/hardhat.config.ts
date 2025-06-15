@@ -11,16 +11,22 @@ import '@nomicfoundation/hardhat-foundry';
 dotenvConfig();
 
 const config: HardhatUserConfig = {
-  solidity: '0.8.28',
+  solidity: {
+    version: '0.8.28',
+    settings: {
+      viaIR: true,
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
+    },
+  },
   paths: {
     tests: './hardhat-tests',
   },
   resolc: {
     version: '1.5.2',
     compilerSource: 'npm',
-    settings: {
-      optimizer: {},
-    },
   },
   networks: {
     hardhat: {

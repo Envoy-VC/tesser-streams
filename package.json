@@ -8,10 +8,14 @@
     "commitlint": "commitlint --edit",
     "format": "pnpm biome format",
     "format:write": "pnpm biome format --write",
-    "prepare": "lefthook install"
+    "prepare": "lefthook install",
+    "release": "pnpm run build && changeset publish",
+    "version-packages": "changeset version",
+    "changeset": "changeset"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@changesets/cli": "^2.29.4",
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
     "bignumber.js": "^9.3.0",
