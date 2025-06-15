@@ -91,7 +91,7 @@ contract Marketplace is Ownable, ReentrancyGuard, ERC721Holder {
             "Seller no longer owns NFT"
         );
         bool hasNFTApproval = IERC721(nftContract).isApprovedForAll(
-            msg.sender,
+            listing.seller,
             address(this)
         );
         require(hasNFTApproval, "Marketplace not approved");

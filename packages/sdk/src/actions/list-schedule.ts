@@ -1,18 +1,35 @@
 import {
   type Config,
+  readContract,
   waitForTransactionReceipt,
   writeContract,
 } from '@wagmi/core';
 import { parseEventLogs } from 'viem';
 import { Contracts } from '~/data';
 import type { ListScheduleParams } from '~/types';
-import type { ScheduleListing } from '~/zod';
 
 export const listSchedule = async (
   wagmiConfig: Config,
   params: ListScheduleParams
 ) => {
-  const { tokenId, value } = params;
+  const { tokenId, value, owner } = params;
+
+  const isApprovedForMarketplace = await readContract(wagmiConfig, {
+    abi: Contracts.nft.abi,
+    functionName: 'isApprovedForAll',
+    address: Contracts.nft.address,
+    args: [owner, Contracts.marketplace.address],
+  });
+
+  if (!isApprovedForMarketplace) {
+    const h = await writeContract(wagmiConfig, {
+      abi: Contracts.nft.abi,
+      functionName: 'setApprovalForAll',
+      address: Contracts.nft.address,
+      args: [Contracts.marketplace.address, true],
+    });
+    await waitForTransactionReceipt(wagmiConfig, { hash: h });
+  }
 
   const hash = await writeContract(wagmiConfig, {
     abi: Contracts.marketplace.abi,
@@ -32,5 +49,5 @@ export const listSchedule = async (
     throw new Error('Unable to get Vesting Schedule');
   }
 
-  return { transactionHash: hash, result: result as ScheduleListing, receipt };
+  return { transactionHash: hash, result: result, receipt };
 };

@@ -22,27 +22,28 @@ function RouteComponent() {
           in.
         </div>
       </div>
-      <div className='grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
-        {listings && listings.length > 0 ? (
-          (listings ?? []).map((listing) => (
+
+      {listings && listings.length > 0 ? (
+        <div className='grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 '>
+          {listings.map((listing) => (
             <TradableStreamCard
               key={listing.tokenId}
               {...listing}
             />
-          ))
-        ) : (
-          <div className='mx-auto flex flex-col items-center gap-3'>
-            <div className='text-neutral-300 text-sm'>Nothing to show here</div>
-            {/* biome-ignore lint/nursery/noImgElement: <explanation> */}
-            <img
-              width={128}
-              height={128}
-              src={PlaceholderImage}
-              alt='Empty State'
-            />
-          </div>
-        )}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className='mx-auto flex flex-col items-center gap-3 p-4 '>
+          <div className='text-neutral-300 text-sm'>Nothing to show here</div>
+          {/* biome-ignore lint/nursery/noImgElement: <explanation> */}
+          <img
+            width={128}
+            height={128}
+            src={PlaceholderImage}
+            alt='Empty State'
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -62,19 +63,18 @@ const TradableStreamCard = (data: ScheduleListing) => {
         />
       </div>
       <div className='flex w-full flex-col gap-1 px-4 py-3'>
-        <div className='font-medium text-base'>#${data.tokenId}</div>
+        <div className='font-medium text-base'>#{data.tokenId}</div>
         <div className='flex flex-row items-center gap-1'>
-          <div className='font-medium text-neutral-400 text-sm'>Vested:</div>
+          <div className='font-medium text-neutral-400 text-sm'>
+            Releasable:
+          </div>
           <div className='flex flex-row items-center gap-1'>
             <div className='text-sm'>
-              {formatCurrency(Number(data.price) / 1e18)}
-            </div>
-            <div className='flex size-5 items-center justify-center rounded-full bg-primary'>
-              <TesserStreamsLogo
-                fill='#fff'
-                stroke='#fff'
-                className='size-3'
-              />
+              {formatCurrency(
+                (Number(schedule?.totalAmount ?? 0) -
+                  Number(schedule?.released ?? 0)) /
+                  1e18
+              )}
             </div>
           </div>
         </div>
@@ -84,6 +84,20 @@ const TradableStreamCard = (data: ScheduleListing) => {
             <div className='text-sm'>
               {(Number(schedule?.alpha ?? 0) / 1e18).toFixed(2)}
             </div>
+          </div>
+        </div>
+      </div>
+      <div className='absolute right-3 bottom-3'>
+        <div className='flex flex-row items-center gap-1'>
+          <div className='text-sm'>
+            {formatCurrency(Number(data.price) / 1e18)}
+          </div>
+          <div className='flex size-5 items-center justify-center rounded-full bg-primary'>
+            <TesserStreamsLogo
+              fill='#fff'
+              stroke='#fff'
+              className='size-3'
+            />
           </div>
         </div>
       </div>

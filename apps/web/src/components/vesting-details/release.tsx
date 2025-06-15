@@ -9,9 +9,11 @@ import { useAccount } from 'wagmi';
 
 interface ReleaseScheduleFormProps {
   vestingId: string;
+  isBeneficiary: boolean;
 }
 
 export const ReleaseScheduleButton = ({
+  isBeneficiary,
   vestingId,
 }: ReleaseScheduleFormProps) => {
   const [isReleasing, setIsReleasing] = useState(false);
@@ -24,6 +26,8 @@ export const ReleaseScheduleButton = ({
   const releaseScheduleMutation = useMutation(
     api.functions.vesting.releaseSchedule
   );
+
+  if (!isBeneficiary) return null;
 
   const onSubmit = async () => {
     try {

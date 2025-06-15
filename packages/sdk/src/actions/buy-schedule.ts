@@ -1,5 +1,6 @@
 import {
   type Config,
+  readContract,
   waitForTransactionReceipt,
   writeContract,
 } from '@wagmi/core';
@@ -11,7 +12,33 @@ export const buySchedule = async (
   wagmiConfig: Config,
   params: BuyScheduleParams
 ) => {
-  const { tokenId } = params;
+  const { tokenId, buyer } = params;
+
+  // Get Listing
+  const [seller, price] = await readContract(wagmiConfig, {
+    abi: Contracts.marketplace.abi,
+    functionName: 'listings',
+    address: Contracts.marketplace.address,
+    args: [Contracts.nft.address, tokenId],
+  });
+
+  // Check token allowance for marketplace
+  const allowance = await readContract(wagmiConfig, {
+    abi: Contracts.token.abi,
+    functionName: 'allowance',
+    address: Contracts.token.address,
+    args: [buyer, Contracts.marketplace.address],
+  });
+
+  if (allowance < price) {
+    const h = await writeContract(wagmiConfig, {
+      abi: Contracts.token.abi,
+      functionName: 'approve',
+      address: Contracts.token.address,
+      args: [Contracts.marketplace.address, price],
+    });
+    await waitForTransactionReceipt(wagmiConfig, { hash: h });
+  }
 
   const hash = await writeContract(wagmiConfig, {
     abi: Contracts.marketplace.abi,

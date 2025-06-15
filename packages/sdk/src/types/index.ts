@@ -28,12 +28,14 @@ export type GetAllowanceParams = {
 };
 
 export type ListScheduleParams = {
+  owner: Address;
   tokenId: bigint;
   value: bigint;
 };
 
 export type BuyScheduleParams = {
   tokenId: bigint;
+  buyer: Address;
 };
 
 export type RemoveScheduleListingParams = {

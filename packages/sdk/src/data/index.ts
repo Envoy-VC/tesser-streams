@@ -8,20 +8,20 @@ import {
 
 // Ethereum Sepolia
 // Deploying Counter deployer address 0x9A36a8EDAF9605F7D4dDC72F4D81463fb6f841d8
-// Deployed DiamondCutFacet:  0x178758B1195fbbe68B0aD2bBdB2bF38712f7Ebb6
-// Deployed OwnershipFacet:  0xC94e5f5E4829b2b9AC8938E7Fe4695F6ec1B9145
-// Deployed TesserProxy:  0x1a522B6e68fE4ec21f3ddFC590dfb0957B91d86c
-// Deployed DiamondLoupeFacet:  0x47CD15374793577f9003D5a43b4fFCE335aA5eA2
-// Deployed VestingCoreFacet:  0xE232e81B583A0eac1b4a7AC3b36922E3b7eCDA7B
-// Deployed VestingMathFacet:  0xC55a9277CF87f72E275a564c646Bd82E1B2AE0F3
-// Deployed ERC6551RegistryFacet:  0x33E6bE39159adC0E3247980F220a5126C21a2f6f
-// Deployed TesserInit:  0x82bC958bcCedA4B7701334f59Fbf4DD057A651e9
-// Deployed Implementation:  0x2Aa6C8194367b6f4E47c9d2D2a3357971a99DD09
-// Deployed FractionalStreamNFT:  0xD5B94E588026144d61f1a93872FDb50e26fb3342
-// Deployed TesserToken:  0xc3de5B4b41e96dC45076842932EC14FE54AaaFD0
-// Deployed Marketplace:  0x0Ef2C6093fF7A23F0201dE4436d855D92c7384C8
+// Deployed DiamondCutFacet:  0x72c290C55E5C836dbB05ff7cA3948AB2AaFb8917
+// Deployed OwnershipFacet:  0x23fb3A2CAe9dC42111B1430a1A091c8a7111903b
+// Deployed TesserProxy:  0x75436f3D74CcAcB1Fa507B827420B08Fb571D9bc
+// Deployed DiamondLoupeFacet:  0xE1aA670E25BA752A0F301bcD35226aa6E467fB42
+// Deployed VestingCoreFacet:  0x77DCfD4af638aff0A7B0A55542775686B8aD4A86
+// Deployed VestingMathFacet:  0x33EB9e0E7f4B36ea0dd2483457E7E1a8C22d2b90
+// Deployed ERC6551RegistryFacet:  0x247F6C66a3235B0070c4E6717E3Ce83F98E2c8be
+// Deployed TesserInit:  0x84646a4D60694c326B3bA5c01B694336a6f4e8Ff
+// Deployed Implementation:  0x24d693862989de0b5684cF52bF933D6c7864b464
+// Deployed FractionalStreamNFT:  0x1fE3Df604B3aeAA512526E9257D4b82bB9F29E03
+// Deployed TesserToken:  0xB45B09F037f3ac0a38aD78F9307f1Be1c2a91418
+// Deployed Marketplace:  0xA1dc4DA60D7AFbD3e1B3d8DE3385B60D2e5E1229
 
-const proxyContractAddress = '0x1a522B6e68fE4ec21f3ddFC590dfb0957B91d86c';
+const proxyContractAddress = '0x75436f3D74CcAcB1Fa507B827420B08Fb571D9bc';
 
 export const Contracts = {
   tesserProxy: {
@@ -37,14 +37,14 @@ export const Contracts = {
   },
   nft: {
     abi: FRACTIONAL_NFT_ABI,
-    address: '0xD5B94E588026144d61f1a93872FDb50e26fb3342',
+    address: '0x1fE3Df604B3aeAA512526E9257D4b82bB9F29E03',
   },
   token: {
     abi: TESSER_TOKEN_ABI,
-    address: '0xc3de5B4b41e96dC45076842932EC14FE54AaaFD0',
+    address: '0xB45B09F037f3ac0a38aD78F9307f1Be1c2a91418',
   },
   marketplace: {
     abi: MARKETPLACE_ABI,
-    address: '0x0Ef2C6093fF7A23F0201dE4436d855D92c7384C8',
+    address: '0xA1dc4DA60D7AFbD3e1B3d8DE3385B60D2e5E1229',
   },
 } as const;

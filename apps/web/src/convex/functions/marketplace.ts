@@ -82,3 +82,16 @@ export const buyMarketplaceListing = mutation({
     return { _id: id, ...sale };
   },
 });
+
+export const getListingForTokenId = query({
+  args: {
+    tokenId: z.string(),
+  },
+  handler: async (ctx, args) => {
+    const res = await ctx.db
+      .query('listings')
+      .withIndex('by_token_id', (q) => q.eq('tokenId', args.tokenId))
+      .first();
+    return res;
+  },
+});
