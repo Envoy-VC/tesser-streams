@@ -10,7 +10,7 @@
     "format:write": "pnpm biome format --write",
     "prepare": "lefthook install",
     "release": "pnpm run build && changeset publish",
-    "version-packages": "changeset version",
+    "re": "pnpm run build --filter @tesser-streams/sdk && changeset publish",
     "changeset": "changeset"
   },
   "devDependencies": {
